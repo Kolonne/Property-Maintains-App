@@ -68,6 +68,10 @@ If you see `"ok": false`, your `DATABASE_URL` is wrong or the network is blocked
 
 ```
 .
+├── db/
+│   ├── schema.sql                  # Source of truth for the DB schema
+│   ├── seed.sql                    # Sample data for development
+│   └── README.md                   # How to run schema/seed against Neon
 ├── src/
 │   ├── app/
 │   │   ├── api/
@@ -75,12 +79,17 @@ If you see `"ok": false`, your `DATABASE_URL` is wrong or the network is blocked
 │   │   ├── layout.tsx              # Root layout (loads Bootstrap CSS)
 │   │   └── page.tsx                # Home page
 │   └── lib/
-│       └── db.ts                   # Neon Postgres client (use getSql())
+│       ├── db.ts                   # Neon Postgres client (use getSql())
+│       └── types.ts                # TypeScript interfaces for DB rows
 ├── public/                         # Static assets
 ├── .env.example                    # Env template (commit this)
 ├── .env.local                      # Real secrets (gitignored)
 └── package.json
 ```
+
+## Database
+
+See [`db/README.md`](db/README.md) for the schema, seed data, and how to apply them to Neon.
 
 ## Querying the Database
 
