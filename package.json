@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:apply": "node --env-file=.env.local scripts/apply-sql.mjs db/schema.sql",
+    "db:seed": "node --env-file=.env.local scripts/apply-sql.mjs db/seed.sql",
+    "db:reset": "node --env-file=.env.local scripts/apply-sql.mjs db/schema.sql db/seed.sql"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
