@@ -54,6 +54,7 @@ export interface Property {
   property_type: PropertyType | null;
   num_units: number;
   owner_id: number | null;
+  manager_id: number | null;
   created_at: string;
 }
 

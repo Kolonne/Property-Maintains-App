@@ -44,10 +44,12 @@ CREATE TABLE IF NOT EXISTS properties (
                        CHECK (property_type IN ('house', 'unit')),
     num_units        INTEGER NOT NULL DEFAULT 1,
     owner_id         INTEGER REFERENCES users(user_id) ON DELETE RESTRICT,
+    manager_id       INTEGER REFERENCES users(user_id) ON DELETE SET NULL,
     created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_properties_owner ON properties(owner_id);
+CREATE INDEX IF NOT EXISTS idx_properties_owner   ON properties(owner_id);
+CREATE INDEX IF NOT EXISTS idx_properties_manager ON properties(manager_id);
 
 CREATE TABLE IF NOT EXISTS units (
     unit_id              SERIAL PRIMARY KEY,

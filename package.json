@@ -9,8 +9,9 @@
     "lint": "eslint",
     "db:apply": "node --env-file=.env.local scripts/apply-sql.mjs db/schema.sql",
     "db:seed": "node --env-file=.env.local scripts/apply-sql.mjs db/seed.sql",
-    "db:reset": "node --env-file=.env.local scripts/apply-sql.mjs db/schema.sql db/seed.sql",
-    "db:migrate-v2": "node --env-file=.env.local scripts/apply-sql.mjs db/migrate-v2.sql"
+    "db:reset": "node --env-file=.env.local scripts/apply-sql.mjs db/truncate-all.sql db/seed.sql",
+    "db:migrate-v2": "node --env-file=.env.local scripts/apply-sql.mjs db/migrate-v2.sql",
+    "db:migrate-v3": "node --env-file=.env.local scripts/apply-sql.mjs db/migrate-v3.sql"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
