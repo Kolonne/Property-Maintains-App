@@ -1,24 +1,37 @@
 // Database row types — match db/schema.sql exactly.
+// Updated 2026-04-26: scope reduction per Rebekah Coleman's review.
 // Use these as return types for queries, e.g.:
 //   const rows = (await sql`SELECT * FROM users`) as User[];
 
-export type UserRole = "tenant" | "landlord" | "property_manager" | "maintenance_staff";
-export type PropertyType = "house" | "unit" | "commercial";
+export type UserRole = "tenant" | "landlord" | "property_manager";
+export type PropertyType = "house" | "unit";
 export type UnitStatus = "occupied" | "vacant";
 export type RentFrequency = "weekly" | "fortnightly" | "monthly";
 export type TenancyStatus = "active" | "expired" | "terminated";
-export type RequestCategory = "plumbing" | "electrical" | "structural" | "appliance" | "pest" | "general";
+export type RequestCategory =
+  | "plumbing"
+  | "electrical"
+  | "structural"
+  | "appliance"
+  | "pest"
+  | "general";
 export type RequestPriority = "low" | "medium" | "high" | "urgent";
 export type RequestStatus =
   | "submitted"
   | "acknowledged"
   | "in_progress"
   | "awaiting_parts"
+  | "awaiting_landlord_approval"
+  | "landlord_approved"
   | "completed"
   | "closed";
-export type WorkOrderStatus = "assigned" | "scheduled" | "in_progress" | "completed" | "cancelled";
-export type NotificationType = "email" | "sms" | "in_app";
-export type InspectionStatus = "scheduled" | "completed" | "cancelled";
+export type WorkOrderStatus =
+  | "assigned"
+  | "scheduled"
+  | "in_progress"
+  | "completed"
+  | "cancelled";
+export type NotificationType = "email" | "in_app";
 
 export interface User {
   user_id: number;
@@ -118,15 +131,6 @@ export interface WorkOrder {
   completed_at: string | null;
 }
 
-export interface WorkOrderMaterial {
-  material_id: number;
-  work_order_id: number;
-  description: string;
-  quantity: number;
-  unit_cost: string | null;
-  supplier: string | null;
-}
-
 export interface Comment {
   comment_id: number;
   request_id: number;
@@ -154,24 +158,4 @@ export interface AuditLog {
   new_status: string | null;
   changed_at: string;
   notes: string | null;
-}
-
-export interface Inspection {
-  inspection_id: number;
-  property_id: number;
-  inspector_id: number | null;
-  scheduled_date: string;
-  completed_date: string | null;
-  report_notes: string | null;
-  status: InspectionStatus;
-}
-
-export interface RecurringMaintenance {
-  schedule_id: number;
-  property_id: number;
-  task_description: string;
-  frequency_days: number;
-  last_completed: string | null;
-  next_due: string | null;
-  assigned_contractor_id: number | null;
 }
