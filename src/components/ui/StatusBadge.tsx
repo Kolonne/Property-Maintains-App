@@ -1,13 +1,3 @@
-/**
- * StatusBadge — warm-palette pill for a maintenance request status.
- *
- * Strictly Zapier-faithful: only sand / cream / charcoal / orange.
- * Three visual tiers:
- *   - "open"      → light-sand pill (in flight, no action needed)
- *   - "attention" → orange-accented pill (needs someone to act)
- *   - "closed"    → dark pill (done) or muted (archived)
- */
-
 import type { RequestStatus } from "@/lib/types";
 
 type Tier = "open" | "attention" | "done" | "archived";
@@ -24,26 +14,10 @@ const STATUS_MAP: Record<RequestStatus, { label: string; tier: Tier }> = {
 };
 
 const TIER_STYLES: Record<Tier, React.CSSProperties> = {
-  open: {
-    background: "#eceae3",
-    color: "#36342e",
-    border: "1px solid #c5c0b1",
-  },
-  attention: {
-    background: "#fffefb",
-    color: "#ff4f00",
-    border: "1px solid #ff4f00",
-  },
-  done: {
-    background: "#201515",
-    color: "#fffefb",
-    border: "1px solid #201515",
-  },
-  archived: {
-    background: "#fffdf9",
-    color: "#939084",
-    border: "1px solid #c5c0b1",
-  },
+  open:      { background: "#eceae3", color: "#36342e", border: "1px solid #c5c0b1" },
+  attention: { background: "#fffefb", color: "#ff4f00", border: "1px solid #ff4f00" },
+  done:      { background: "#201515", color: "#fffefb", border: "1px solid #201515" },
+  archived:  { background: "#fffdf9", color: "#939084", border: "1px solid #c5c0b1" },
 };
 
 export function StatusBadge({ status }: { status: RequestStatus }) {

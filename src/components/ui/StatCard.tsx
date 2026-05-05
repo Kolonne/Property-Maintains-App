@@ -1,8 +1,3 @@
-/**
- * StatCard — clickable tile for a dashboard stat or quick action.
- * Uses warm border + cream surface per guideline §5.2.
- */
-
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -12,21 +7,10 @@ interface StatCardProps {
   subtitle?: string;
   value?: string | number;
   href?: string;
-  emphasised?: boolean; // if true, the value uses orange accent
+  emphasised?: boolean;
 }
 
-/**
- * Per §5.2 cards use cream surface + sand border. No pastel pills,
- * no shadows. Icon container is light-sand (#eceae3) only.
- */
-export function StatCard({
-  icon,
-  title,
-  subtitle,
-  value,
-  href,
-  emphasised = false,
-}: StatCardProps) {
+export function StatCard({ icon, title, subtitle, value, href, emphasised = false }: StatCardProps) {
   const inner = (
     <div
       className="h-100 p-3 d-flex flex-row align-items-center"
@@ -56,14 +40,7 @@ export function StatCard({
             {title}
           </div>
           {value !== undefined && (
-            <div
-              style={{
-                fontSize: "18px",
-                fontWeight: 600,
-                color: emphasised ? "#ff4f00" : "#201515",
-                lineHeight: 1,
-              }}
-            >
+            <div style={{ fontSize: "18px", fontWeight: 600, color: emphasised ? "#ff4f00" : "#201515", lineHeight: 1 }}>
               {value}
             </div>
           )}
@@ -81,7 +58,5 @@ export function StatCard({
     <Link href={href} style={{ textDecoration: "none" }}>
       {inner}
     </Link>
-  ) : (
-    inner
-  );
+  ) : inner;
 }

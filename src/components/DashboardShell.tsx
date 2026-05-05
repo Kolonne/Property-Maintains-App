@@ -1,10 +1,3 @@
-/**
- * DashboardShell — shared layout for all role dashboards.
- * Renders: top navbar + left sidebar + main content area.
- *
- * Each role (tenant / PM / landlord) passes its own sidebar links + user info.
- */
-
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { UserRole } from "@/lib/types";
@@ -32,7 +25,7 @@ export function DashboardShell({ user, sidebarLinks, children }: DashboardShellP
   return (
     <div className="d-flex flex-column" style={{ minHeight: "100vh", background: "#fffefb" }}>
 
-      {/* ── Top navbar ─────────────────────────────────────────── */}
+      {/* navbar */}
       <header
         style={{
           background: "#fffefb",
@@ -44,33 +37,18 @@ export function DashboardShell({ user, sidebarLinks, children }: DashboardShellP
         }}
       >
         <div className="container-fluid h-100 d-flex align-items-center justify-content-between px-4">
-          <Link href="/" className="d-flex align-items-center" style={{ gap: "10px", textDecoration: "none" }}>
-            <span
-              style={{
-                width: "28px",
-                height: "28px",
-                background: "#ff4f00",
-                borderRadius: "6px",
-                display: "inline-block",
-              }}
-            />
-            <span style={{ fontSize: "18px", fontWeight: 600, color: "#201515" }}>
-              PropMaintain
-            </span>
+          <Link href="/" className="d-flex align-items-center" style={{ gap: "10px" }}>
+            <span style={{ width: "28px", height: "28px", background: "#ff4f00", borderRadius: "6px", display: "inline-block" }} />
+            <span style={{ fontSize: "18px", fontWeight: 600, color: "#201515" }}>PropMaintain</span>
           </Link>
 
           <div className="d-flex align-items-center" style={{ gap: "16px" }}>
             <span
               className="d-none d-md-inline"
               style={{
-                fontSize: "12px",
-                fontWeight: 600,
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                color: "#36342e",
-                background: "#eceae3",
-                padding: "4px 10px",
-                borderRadius: "4px",
+                fontSize: "12px", fontWeight: 600, textTransform: "uppercase",
+                letterSpacing: "0.5px", color: "#36342e", background: "#eceae3",
+                padding: "4px 10px", borderRadius: "4px",
               }}
             >
               {ROLE_LABEL[user.role]}
@@ -82,12 +60,9 @@ export function DashboardShell({ user, sidebarLinks, children }: DashboardShellP
               href="/logout"
               className="btn btn-sm"
               style={{
-                background: "#eceae3",
-                color: "#36342e",
-                border: "1px solid #c5c0b1",
-                borderRadius: "6px",
-                fontWeight: 600,
-                fontSize: "14px",
+                background: "#eceae3", color: "#36342e",
+                border: "1px solid #c5c0b1", borderRadius: "6px",
+                fontWeight: 600, fontSize: "14px",
               }}
             >
               Logout
@@ -96,10 +71,9 @@ export function DashboardShell({ user, sidebarLinks, children }: DashboardShellP
         </div>
       </header>
 
-      {/* ── Body: sidebar + main ─────────────────────────────── */}
       <div className="d-flex flex-grow-1">
 
-        {/* Sidebar */}
+        {/* sidebar - hidden on mobile */}
         <aside
           className="d-none d-md-flex flex-column flex-shrink-0"
           style={{
@@ -116,7 +90,6 @@ export function DashboardShell({ user, sidebarLinks, children }: DashboardShellP
                 href={link.href}
                 className="d-flex align-items-center px-3 py-2"
                 style={{
-                  textDecoration: "none",
                   color: link.active ? "#201515" : "#36342e",
                   fontWeight: link.active ? 600 : 500,
                   fontSize: "14px",
@@ -133,15 +106,8 @@ export function DashboardShell({ user, sidebarLinks, children }: DashboardShellP
           </nav>
         </aside>
 
-        {/* Main */}
-        <main
-          className="flex-grow-1"
-          style={{
-            padding: "32px",
-            background: "#fffefb",
-            minWidth: 0,
-          }}
-        >
+        {/* main content */}
+        <main className="flex-grow-1" style={{ padding: "32px", background: "#fffefb", minWidth: 0 }}>
           <div className="mx-auto" style={{ maxWidth: "1200px" }}>
             {children}
           </div>

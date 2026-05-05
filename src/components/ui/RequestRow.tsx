@@ -1,24 +1,15 @@
-/**
- * RequestRow — one row in a list of maintenance requests.
- * Includes priority left-border per guideline §5.4 and a status badge.
- */
-
 import Link from "next/link";
 import { StatusBadge } from "./StatusBadge";
 import { PriorityBadge, priorityBorderColour } from "./PriorityBadge";
 import type { MaintenanceRequest } from "@/lib/types";
 
 interface RequestRowProps {
-  request: Pick<
-    MaintenanceRequest,
-    "request_id" | "title" | "status" | "priority" | "submitted_at"
-  >;
+  request: Pick<MaintenanceRequest, "request_id" | "title" | "status" | "priority" | "submitted_at">;
   href?: string;
 }
 
 function formatDate(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleDateString("en-AU", { year: "numeric", month: "short", day: "numeric" });
+  return new Date(iso).toLocaleDateString("en-AU", { year: "numeric", month: "short", day: "numeric" });
 }
 
 export function RequestRow({ request, href }: RequestRowProps) {
@@ -36,16 +27,7 @@ export function RequestRow({ request, href }: RequestRowProps) {
       }}
     >
       <div className="flex-grow-1 min-w-0">
-        <div
-          style={{
-            fontSize: "16px",
-            fontWeight: 600,
-            color: "#201515",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
+        <div style={{ fontSize: "16px", fontWeight: 600, color: "#201515", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {request.title}
         </div>
         <div className="d-flex align-items-center" style={{ gap: "12px", marginTop: "4px" }}>
@@ -65,7 +47,5 @@ export function RequestRow({ request, href }: RequestRowProps) {
     <Link href={href} style={{ textDecoration: "none" }}>
       {inner}
     </Link>
-  ) : (
-    inner
-  );
+  ) : inner;
 }

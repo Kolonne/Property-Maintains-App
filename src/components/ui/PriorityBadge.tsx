@@ -1,12 +1,3 @@
-/**
- * PriorityBadge — warm-palette priority indicator.
- *
- * Strictly Zapier rules: no bright colour-wheel decoration.
- * Only "urgent" earns the orange accent; everything else is a
- * subdued uppercase label. The card's left-border (see helper
- * below) follows the same restraint.
- */
-
 import type { RequestPriority } from "@/lib/types";
 
 const LABELS: Record<RequestPriority, string> = {
@@ -33,9 +24,6 @@ export function PriorityBadge({ priority }: { priority: RequestPriority }) {
   );
 }
 
-/**
- * Card left-border colour for priority. Only urgent gets the orange
- * accent; everything else stays in the warm sand palette.
- */
+// used by RequestRow for the card left-border colour
 export const priorityBorderColour = (p: RequestPriority): string =>
   p === "urgent" ? "#ff4f00" : "#c5c0b1";

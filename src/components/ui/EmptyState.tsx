@@ -1,8 +1,3 @@
-/**
- * EmptyState — designed empty state for list views.
- * Per guideline §8: never show a blank container.
- */
-
 import Link from "next/link";
 import type { ReactNode } from "react";
 
