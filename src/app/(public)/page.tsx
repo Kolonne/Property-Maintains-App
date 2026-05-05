@@ -12,6 +12,12 @@ export default function Home() {
           /api/health
         </a>
       </p>
+      <p>
+        Dashboard:{" "}
+        <a href="/dashboard" className="link-primary">
+          /dashboard
+        </a>
+      </p>
     </main>
   );
 }
