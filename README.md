@@ -68,24 +68,118 @@ If you see `"ok": false`, your `DATABASE_URL` is wrong or the network is blocked
 
 ```
 .
-├── db/
-│   ├── schema.sql                  # Source of truth for the DB schema
-│   ├── seed.sql                    # Sample data for development
-│   └── README.md                   # How to run schema/seed against Neon
+├── db/                                  # Database files for the project
+│   ├── schema.sql                       # Source of truth for the database schema
+│   ├── seed.sql                         # Sample/mock data for development and testing
+│   └── README.md                        # Instructions for applying schema/seed data to Neon
+│
+├── docs/                                # Project documentation and supporting files
+│
+├── public/                              # Static assets such as images, icons, and logos
+│
+├── scripts/                             # Helper scripts used for setup, seeding, or development tasks
+│
 ├── src/
-│   ├── app/
+│   ├── app/                             # Next.js App Router pages and API routes
+│   │   ├── (public)/                    # Public-facing pages; does not appear in the URL
+│   │   │   ├── login/
+│   │   │   │   └── page.tsx             # Login page: /login
+│   │   │   ├── layout.tsx               # Layout/header used for public pages
+│   │   │   └── page.tsx                 # Public home/landing page: /
+│   │   │
+│   │   ├── (protected)/                 # Logged-in app pages; does not appear in the URL
+│   │   │   ├── dashboard/
+│   │   │   │   └── page.tsx             # Role-based dashboard page: /dashboard
+│   │   │   │
+│   │   │   ├── maintenance/
+│   │   │   │   ├── [id]/
+│   │   │   │   │   └── page.tsx         # Individual maintenance request detail page: /maintenance/123
+│   │   │   │   ├── new/
+│   │   │   │   │   └── page.tsx         # Create new maintenance request page: /maintenance/new
+│   │   │   │   └── page.tsx             # Maintenance request list page: /maintenance
+│   │   │   │
+│   │   │   ├── properties/
+│   │   │   │   ├── [id]/
+│   │   │   │   │   └── page.tsx         # Individual property detail page: /properties/123
+│   │   │   │   └── page.tsx             # Property list page: /properties
+│   │   │   │
+│   │   │   └── layout.tsx               # Layout/header used for logged-in pages
+│   │   │
 │   │   ├── api/
-│   │   │   └── health/route.ts    # DB sanity-check endpoint
-│   │   ├── layout.tsx              # Root layout (loads Bootstrap CSS)
-│   │   └── page.tsx                # Home page
+│   │   │   └── health/
+│   │   │       └── route.ts             # Database/API health check endpoint: /api/health
+│   │   │
+│   │   ├── favicon.ico                  # Browser tab icon
+│   │   ├── globals.css                  # Global styles used across the app
+│   │   └── layout.tsx                   # Root layout; loads global styles/providers
+│   │
+│   ├── components/                      # Reusable UI components used by app pages
+│   │   ├── dashboard/
+│   │   │   ├── LandlordDashboard.tsx        # Dashboard view shown for landlord users
+│   │   │   ├── PropertyManagerDashboard.tsx # Dashboard view shown for property manager users
+│   │   │   └── TenantDashboard.tsx          # Dashboard view shown for tenant users
+│   │   │
+│   │   ├── layout/
+│   │   │   ├── ProtectedAppNav.tsx       # Navigation/header used on logged-in app pages
+│   │   │   └── PublicAppNav.tsx          # Navigation/header used on public pages
+│   │   │
+│   │   ├── maintenance/
+│   │   │   ├── MaintenanceDetail.tsx     # Detail view for a single maintenance request. URL: /maintenance/123
+│   │   │   ├── MaintenanceFilters.tsx    # Role-aware filters for the maintenance list
+│   │   │   ├── MaintenanceForm.tsx       # Form for creating or editing maintenance requests
+│   │   │   ├── MaintenanceList.tsx       # General list component for maintenance requests
+│   │   │   ├── MaintenancePageClient.tsx # Main role-aware maintenance page UI and filter state
+│   │   │   ├── MaintenanceRowActions.tsx # Role-specific row buttons, e.g. View, Assign, Approve, Reject
+│   │   │   ├── MaintenanceTable.tsx      # Role-aware maintenance request table
+│   │   │   ├── RequestDiscussion.tsx     # Role-aware discussion/notes section for a request
+│   │   │   └── StatusBadge.tsx           # Reusable badge for request status labels
+│   │   │
+│   │   ├── properties/
+│   │   │   ├── PropertyCard.tsx          # Summary card or row for one property
+│   │   │   ├── PropertyDetail.tsx        # Detail view for one property
+│   │   │   └── PropertyList.tsx          # List of properties visible to the current user
+│   │   │
+│   │   └── shared/
+│   │       └── EmptyState.tsx            # Reusable message shown when no data is available
+│   │
+│   ├── context/
+│   │   └── UserContext.tsx               # Temporary mock current-user provider and role switcher
+│   │
 │   └── lib/
-│       ├── db.ts                   # Neon Postgres client (use getSql())
-│       └── types.ts                # TypeScript interfaces for DB rows
-├── public/                         # Static assets
-├── .env.example                    # Env template (commit this)
-├── .env.local                      # Real secrets (gitignored)
-└── package.json
+│       ├── db.ts                        # Neon Postgres client helper
+│       ├── permissions.ts               # Role/action permission rules
+│       └── types.ts                     # Shared TypeScript types and database row interfaces
+│
+├── .env.example                         # Environment variable template; safe to commit
+├── .env.local                           # Real local environment variables; must not be committed
+├── .gitignore                           # Files/folders Git should ignore
+├── README.md                            # Project setup, structure, and development notes
+└── tsconfig.json                        # TypeScript configuration
 ```
+
+### Routing Notes
+
+This project uses the Next.js App Router. Folders inside `src/app` define website routes.
+
+Folders wrapped in parentheses, such as `(public)` and `(protected)`, are route groups. They help organise pages and apply different layouts, but they do not appear in the URL.
+
+For example:
+
+- `src/app/(public)/page.tsx` becomes `/`
+- `src/app/(public)/login/page.tsx` becomes `/login`
+- `src/app/(protected)/dashboard/page.tsx` becomes `/dashboard`
+- `src/app/(protected)/maintenance/new/page.tsx` becomes `/maintenance/new`
+- `src/app/(protected)/maintenance/[id]/page.tsx` becomes `/maintenance/123`
+
+The app uses feature-based routing rather than role-based routing. Tenants, property managers, and landlords all use the same core routes, such as `/dashboard`, `/maintenance`, and `/properties`. The page content changes depending on the current user's role.
+
+### Current Authentication/Permission Notes
+
+Authentication is currently mocked for prototype development and convenient role switching for quick testing. 
+
+`UserContext.tsx` stores the active mock user and allows switching between tenant, property manager, and landlord views. This lets the team test role-based UI behaviour before real login/session handling is implemented.
+
+Role permissions are defined in `lib/permissions.ts`. Pages and components should use these permission helpers to decide which actions a user can see or perform, such as viewing maintenance requests, creating a request, updating a status, or approving a repair.
 
 ## Database
 
