@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./globals.css";
+import "@/app/globals.css";
+
+import { UserProvider } from "@/context/UserContext";
+import Header from "../../components/layout/ProtectedAppNav";
 
 export const metadata: Metadata = {
   title: "Property Maintains App",
@@ -14,7 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <UserProvider>
+          <Header />
+          {children}
+        </UserProvider>
+      </body>
     </html>
   );
 }
