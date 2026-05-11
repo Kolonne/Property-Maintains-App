@@ -74,3 +74,23 @@ export async function getActiveIssueCount(userId: number): Promise<number> {
   `) as { count: number }[];
   return rows[0]?.count ?? 0;
 }
+
+// full list (with optional status filter) for /requests/tenant
+export async function getAllTenantRequests(userId: number, statusFilter?: string): Promise<TenantRequestSummary[]> {
+  const sql = getSql();
+  if (statusFilter && statusFilter !== "all") {
+    return (await sql`
+      SELECT request_id, title, status, priority, submitted_at
+      FROM maintenance_requests
+      WHERE reported_by = ${userId}
+        AND status = ${statusFilter}
+      ORDER BY submitted_at DESC
+    `) as TenantRequestSummary[];
+  }
+  return (await sql`
+    SELECT request_id, title, status, priority, submitted_at
+    FROM maintenance_requests
+    WHERE reported_by = ${userId}
+    ORDER BY submitted_at DESC
+  `) as TenantRequestSummary[];
+}

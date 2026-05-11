@@ -143,7 +143,7 @@ export default async function TenantDashboardPage() {
             icon={<IconList />}
             title="View All Requests"
             subtitle="Track your submissions"
-            href="/requests"
+            href="/requests/tenant"
           />
         </div>
         <div className="col-md-4">
@@ -163,7 +163,7 @@ export default async function TenantDashboardPage() {
           Recent Maintenance Requests
         </h2>
         <Link
-          href="/requests"
+          href="/requests/tenant"
           style={{
             color: "#36342e",
             fontWeight: 500,
@@ -239,7 +239,7 @@ function fmtDate(iso: string | null) {
 
 const SIDEBAR: SidebarLink[] = [
   { label: "Dashboard",   href: "/dashboard/tenant", active: true },
-  { label: "My Requests", href: "/requests" },
+  { label: "My Requests", href: "/requests/tenant" },
   { label: "Submit New",  href: "/requests/new" },
   { label: "My Profile",  href: "/profile" },
 ];

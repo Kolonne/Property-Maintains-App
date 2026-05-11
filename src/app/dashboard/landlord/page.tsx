@@ -183,7 +183,7 @@ export default async function LandlordDashboardPage() {
           Recent Requests
         </h2>
         <Link
-          href="/requests"
+          href="/requests/landlord"
           style={{ fontSize: "14px", fontWeight: 500, color: "#36342e", textDecoration: "none", borderBottom: "1px solid #c5c0b1", paddingBottom: "1px" }}
         >
           View all →
@@ -392,7 +392,7 @@ const SIDEBAR: SidebarLink[] = [
   { label: "Dashboard",   href: "/dashboard/landlord", active: true },
   { label: "Properties",  href: "/properties" },
   { label: "Approvals",   href: "#approvals" },
-  { label: "All Requests",href: "/requests" },
+  { label: "All Requests",href: "/requests/landlord" },
   { label: "New Request", href: "/requests/new" },
   { label: "My Profile",  href: "/profile" },
 ];

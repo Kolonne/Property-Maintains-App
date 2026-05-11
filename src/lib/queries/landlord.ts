@@ -73,6 +73,34 @@ export async function getApprovalQueue(userId: number): Promise<LandlordRequest[
   `) as LandlordRequest[];
 }
 
+// full list with optional status filter for /requests/landlord
+export async function getAllLandlordRequests(userId: number, statusFilter?: string): Promise<LandlordRequest[]> {
+  const sql = getSql();
+  if (statusFilter && statusFilter !== "all") {
+    return (await sql`
+      SELECT
+        mr.request_id, mr.title, mr.status, mr.priority, mr.submitted_at,
+        p.address AS property_address, u.unit_number
+      FROM maintenance_requests mr
+      JOIN units u      ON u.unit_id     = mr.unit_id
+      JOIN properties p ON p.property_id = u.property_id
+      WHERE p.owner_id = ${userId}
+        AND mr.status  = ${statusFilter}
+      ORDER BY mr.submitted_at DESC
+    `) as LandlordRequest[];
+  }
+  return (await sql`
+    SELECT
+      mr.request_id, mr.title, mr.status, mr.priority, mr.submitted_at,
+      p.address AS property_address, u.unit_number
+    FROM maintenance_requests mr
+    JOIN units u      ON u.unit_id     = mr.unit_id
+    JOIN properties p ON p.property_id = u.property_id
+    WHERE p.owner_id = ${userId}
+    ORDER BY mr.submitted_at DESC
+  `) as LandlordRequest[];
+}
+
 export async function getLandlordRecentRequests(userId: number, limit = 5): Promise<LandlordRequest[]> {
   const sql = getSql();
   return (await sql`

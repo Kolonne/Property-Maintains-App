@@ -96,7 +96,7 @@ export default async function PMDashboardPage() {
             title="Open Requests"
             value={stats.total_open}
             emphasised={stats.total_open > 0}
-            href="/requests"
+            href="/requests/pm"
           />
         </div>
         <div className="col-6 col-md-3">
@@ -121,7 +121,7 @@ export default async function PMDashboardPage() {
         title="Action Queue"
         count={actionable.length}
         subtitle="Open requests that need your attention"
-        rightHref="/requests"
+        rightHref="/requests/pm"
         rightLabel="View all →"
       />
 
@@ -321,7 +321,7 @@ function fmtDate(iso: string) {
 
 const SIDEBAR: SidebarLink[] = [
   { label: "Dashboard",    href: "/dashboard/pm",  active: true },
-  { label: "All Requests", href: "/requests" },
+  { label: "All Requests", href: "/requests/pm" },
   { label: "Properties",   href: "/properties" },
   { label: "Work Orders",  href: "/work-orders" },
   { label: "New Request",  href: "/requests/new" },
