@@ -309,7 +309,7 @@ function PropertyCard({ property: p }: { property: import("@/lib/queries/landlor
             style={{
               height: "100%",
               width: `${pct}%`,
-              background: pct === 100 ? "#201515" : "#c5c0b1",
+              background: pct === 100 ? "#7d8a6a" : "#c5c0b1",
               borderRadius: "2px",
               transition: "width 0.3s ease",
             }}

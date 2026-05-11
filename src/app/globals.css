@@ -10,6 +10,11 @@
   --color-light-sand:  #eceae3;
   --color-off-white:   #fffdf9;
 
+  /* earth-tone accents - kept muted so they sit inside the warm palette */
+  --color-sage:        #7d8a6a;
+  --color-clay:        #a8593e;
+  --color-plum:        #8d6a78;
+
   /* Bootstrap overrides */
   --bs-body-bg:             var(--color-bg);
   --bs-body-color:          var(--color-text);
