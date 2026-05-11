@@ -1,13 +1,31 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Design tokens - Zapier inspired warm palette */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --color-bg:          #fffefb;
+  --color-text:        #201515;
+  --color-accent:      #ff4f00;
+  --color-charcoal:    #36342e;
+  --color-muted:       #939084;
+  --color-sand:        #c5c0b1;
+  --color-light-sand:  #eceae3;
+  --color-off-white:   #fffdf9;
+
+  /* earth-tone accents - kept muted so they sit inside the warm palette */
+  --color-sage:        #7d8a6a;
+  --color-clay:        #a8593e;
+  --color-plum:        #8d6a78;
+
+  /* Bootstrap overrides */
+  --bs-body-bg:             var(--color-bg);
+  --bs-body-color:          var(--color-text);
+  --bs-primary:             var(--color-accent);
+  --bs-primary-rgb:         255, 79, 0;
+  --bs-border-color:        var(--color-sand);
+  --bs-card-bg:             var(--color-bg);
+  --bs-card-border-color:   var(--color-sand);
+  --bs-font-sans-serif:     'Inter', Helvetica, Arial, sans-serif;
+
+  --section-pad-y: 64px;
 }
 
 html {
@@ -24,17 +42,15 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--bs-font-sans-serif);
+  background-color: var(--color-bg);
+  color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 * {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
 }
 
 a {
@@ -42,8 +58,16 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* orange focus instead of Bootstrap blue */
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: none;
+}
+
+.card {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-sand);
+  box-shadow: none;
 }
