@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 export default function PropertyManagerMaintenanceList() {
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeFilter, setActiveFilter] = useState("ALL");
   const [search, setSearch] = useState("");
 
   const requests = [
@@ -12,22 +12,22 @@ export default function PropertyManagerMaintenanceList() {
     title: "Leaking Kitchen Sink",
     tenant: "John Smith",
     unit: "A-102",
-    status: "Open",
-    priority: "High",
+    status: "OPEN",
+    priority: "HIGH PRIORITY",
   },
   {
     id: 2,
     title: "Air Conditioner Issue",
     tenant: "Emma Watson",
     unit: "B-204",
-    status: "In Progress",
-    priority: "Medium",
+    status: "IN PROGRESS",
+    priority: "MEDIUM PRIORITY",
   },
 ];
 
   const filteredRequests = requests.filter((request) => {
     const matchesFilter =
-      activeFilter === "All" || request.status === activeFilter;
+      activeFilter === "ALL" || request.status === activeFilter;
 
     const matchesSearch = request.title
       .toLowerCase()
@@ -40,17 +40,17 @@ export default function PropertyManagerMaintenanceList() {
     <div className="container py-4">
       {/* Heading */}
       <div className="mb-4">
-        <h2 className="fw-normal text-dark">All Maintenance Requests</h2>
+        <h2 className="fw-normal text-dark">ALL Maintenance Requests</h2>
 
         <p className="text-secondary mb-0">
-          view and manage all requests.
+          view and manage ALL requests.
         </p>        
       </div>
 
       {/* Filters */}
       <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
         <div className="d-flex gap-2 flex-wrap">
-          {["All", "Open", "In Progress", "Completed"].map((filter) => (
+          {["ALL", "OPEN", "IN PROGRESS", "COMPLETED"].map((filter) => (
             <button
               key={filter}
               className={`btn custom-filter-btn ${
@@ -73,7 +73,7 @@ export default function PropertyManagerMaintenanceList() {
 
         <div style={{ minWidth: "200px" }}>
             <select className="form-select">
-                <option>All Properties</option>
+                <option>ALL Properties</option>
                 <option>Sunset Apartments</option>
                 <option>City Heights</option>
                 <option>Green Villas</option>
@@ -81,28 +81,42 @@ export default function PropertyManagerMaintenanceList() {
         </div>
 
         {/* Search */}
-      <div style={{ minWidth: "250px" }}>
-        <div className="position-relative">
+     <div className="d-flex align-items-center gap-2 flex-wrap">
+        <div style={{ minWidth: "250px" }}>
+          <div className="position-relative">
             <i
-            className="bi bi-search position-absolute"
-            style={{
+              className="bi bi-search position-absolute"
+              style={{
                 left: "12px",
                 top: "50%",
                 transform: "translateY(-50%)",
                 color: "#6c757d",
                 fontSize: "14px",
-            }}
+              }}
             ></i>
 
             <input
-            type="text"
-            className="form-control ps-5"
-            placeholder="Search ..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+              type="text"
+              className="form-control ps-5"
+              placeholder="Search requests..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
+          </div>
         </div>
-        </div>
+
+        {/* Add New Button */}
+        <button
+          className="btn text-white"
+          style={{
+            backgroundColor: "orangered",
+            borderColor: "orangered",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Add New
+        </button>
+      </div>
       </div>
 
       {/* Table */}
@@ -185,32 +199,69 @@ export default function PropertyManagerMaintenanceList() {
                 </td>
 
                 <td>
-                    <span
+                  <span
                     className="badge"
                     style={{
-                        backgroundColor:
-                        request.status === "Completed"
-                            ? "#198754"
-                            : request.status === "In Progress"
-                            ? "#fd7e14"
-                            : "#0d6efd",
+                      backgroundColor:
+                        request.status === "COMPLETED"
+                          ? "#E8F7EE"
+                          : request.status === "IN PROGRESS"
+                          ? "#FFF8E1"
+                          : "#F3EEFF",
+
+                      color:
+                        request.status === "COMPLETED"
+                          ? "#2E8B57"
+                          : request.status === "IN PROGRESS"
+                          ? "#B78103"
+                          : "#7C4DCC",
+
+                      border:
+                        request.status === "COMPLETED"
+                          ? "1px solid #2E8B57"
+                          : request.status === "IN PROGRESS"
+                          ? "1px solid #B78103"
+                          : "1px solid #7C4DCC",
+
+                      fontWeight: 600,
+                      padding: "7px 12px",
+                      
+                      fontSize: "12px",
+                      letterSpacing: "0.3px",
                     }}
-                    >
+                  >
                     {request.status}
-                    </span>
+                  </span>
                 </td>
 
-                <td className="text-secondary">
+                <td>
+                  <span
+                    style={{
+                      color:
+                        request.priority === "HIGH PRIORITY"
+                          ? "#e8793d"
+                          : "#939084",
+                      fontWeight: 600,
+                      fontSize: "13px",
+                      letterSpacing: "0.3px",
+                    }}
+                  >
                     {request.priority}
+                  </span>
                 </td>
 
                 <td>
                     <div className="d-flex align-items-center gap-2">
                     <button
-                        className="btn btn-sm text-white"
-                        style={{
-                        backgroundColor: "orangered",
-                        }}
+                        className="btn btn-sm"
+                         style={{
+                        backgroundColor: "#ECEAE3",
+                        color: "#36342E",
+                        border: "1px solid #C5C0B1",
+                        borderRadius: "8px",
+                        fontWeight: 600,
+                        padding: "6px 14px",
+                      }}
                     >
                         Assign
                     </button>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 export default function LandlordMaintenanceList() {
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeFilter, setActiveFilter] = useState("ALL");
   const [search, setSearch] = useState("");
 
   const requests = [
@@ -13,7 +13,7 @@ export default function LandlordMaintenanceList() {
     property: "Sunset Apartments",
     cost: "$120",
     submitted: "2026-05-01",
-    status: "Pending",
+    status: "PENDING",
   },
   {
     id: 2,
@@ -21,7 +21,7 @@ export default function LandlordMaintenanceList() {
     property: "City Heights",
     cost: "$300",
     submitted: "2026-05-03",
-    status: "Approved",
+    status: "APPROVED",
   },
   {
     id: 3,
@@ -29,12 +29,12 @@ export default function LandlordMaintenanceList() {
     property: "Green Villas",
     cost: "$180",
     submitted: "2026-05-05",
-    status: "Rejected",
+    status: "REJECTED",
   },
 ];
 
   const filteredRequests = requests.filter((request) => {
-    const matchesFilter = activeFilter === "All" || request.status === activeFilter;
+    const matchesFilter = activeFilter === "ALL" || request.status === activeFilter;
 
     const matchesSearch = request.title
       .toLowerCase()
@@ -57,7 +57,7 @@ export default function LandlordMaintenanceList() {
       {/* Filters */}
       <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
         <div className="d-flex gap-2 flex-wrap">
-          {["All", "Pending", "Approved", "Rejected"].map((filter) => (
+          {["ALL", "PENDING", "APPROVED", "REJECTED"].map((filter) => (
             <button
               key={filter}
               className={`btn custom-filter-btn ${
@@ -79,28 +79,42 @@ export default function LandlordMaintenanceList() {
         </div>
 
         {/* Search */}
-      <div style={{ minWidth: "250px" }}>
-        <div className="position-relative">
+     <div className="d-flex align-items-center gap-2 flex-wrap">
+        <div style={{ minWidth: "250px" }}>
+          <div className="position-relative">
             <i
-            className="bi bi-search position-absolute"
-            style={{
+              className="bi bi-search position-absolute"
+              style={{
                 left: "12px",
                 top: "50%",
                 transform: "translateY(-50%)",
                 color: "#6c757d",
                 fontSize: "14px",
-            }}
+              }}
             ></i>
 
             <input
-            type="text"
-            className="form-control ps-5"
-            placeholder="Search ..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+              type="text"
+              className="form-control ps-5"
+              placeholder="Search ..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
+          </div>
         </div>
-        </div>
+
+        {/* Add New Button */}
+        <button
+          className="btn text-white"
+          style={{
+            backgroundColor: "orangered",
+            borderColor: "orangered",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Add New
+        </button>
+      </div>
       </div>
 
       {/* Table */}
@@ -181,40 +195,99 @@ export default function LandlordMaintenanceList() {
       <td className="text-secondary">{request.submitted}</td>
 
       {/* STATUS COLUMN */}
-      <td>
-        <span
-          className="badge"
-          style={{
-            backgroundColor:
-              request.status === "Approved"
-                ? "#198754"
-                : request.status === "Rejected"
-                ? "#dc3545"
-                : "#fd7e14",
-          }}
-        >
-          {request.status}
-        </span>
-      </td>
+     {/* STATUS COLUMN */}
+    <td>
+      <span
+        className="badge"
+        style={{
+          backgroundColor:
+            request.status === "APPROVED"
+              ? "#e8f6f7"
+              : request.status === "REJECTED"
+              ? "#FDECEC"
+              : "#FFF8E1",
+
+          color:
+            request.status === "APPROVED"
+              ? "#2E8B57"
+              : request.status === "REJECTED"
+              ? "#C45757"
+              : "#B78103",
+
+          border:
+            request.status === "APPROVED"
+              ? "1px solid #2E8B57"
+              : request.status === "REJECTED"
+              ? "1px solid #C45757"
+              : "1px solid #B78103",
+
+          fontWeight: 600,
+          padding: "7px 12px",
+          fontSize: "12px",
+          letterSpacing: "0.3px",          
+        }}
+      >
+        {request.status}
+      </span>
+    </td>
 
       {/* ACTION COLUMN */}
       <td>
-        {request.status === "Pending" ? (
+        {request.status === "PENDING" ? (
           <div className="d-flex gap-2">
-            <button
-              className="btn btn-sm text-white"
-              style={{ backgroundColor: "#198754" }}
-            >
-              APPROVE
-            </button>
 
-            <button
-              className="btn btn-sm text-white"
-              style={{ backgroundColor: "orangered" }}
-            >
-              REJECT
-            </button>
-          </div>
+  {/* Approve */}
+  <button
+    className="btn btn-sm d-flex align-items-center gap-2 px-3 py-2 text-white"
+    style={{
+      background: "linear-gradient(135deg, #28a745, #20c997)",
+      border: "none",
+      borderRadius: "50px",
+      fontWeight: 600,
+      boxShadow: "0 4px 12px rgba(40, 167, 69, 0.25)",
+      transition: "all 0.25s ease",
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = "translateY(-2px)";
+      e.currentTarget.style.boxShadow = "0 8px 18px rgba(40, 167, 69, 0.35)";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = "translateY(0)";
+      e.currentTarget.style.boxShadow = "0 4px 12px rgba(40, 167, 69, 0.25)";
+    }}
+  >
+    <i className="bi bi-check2-circle"></i>
+    Approve
+  </button>
+
+  {/* Reject */}
+  <button
+    className="btn btn-sm d-flex align-items-center gap-2 px-3 py-2"
+    style={{
+      background: "#fff",
+      color: "#dc3545",
+      border: "2px solid #dc3545",
+      borderRadius: "50px",
+      fontWeight: 600,
+      boxShadow: "0 3px 10px rgba(220, 53, 69, 0.15)",
+      transition: "all 0.25s ease",
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.backgroundColor = "#dc3545";
+      e.currentTarget.style.color = "#fff";
+      e.currentTarget.style.transform = "translateY(-2px)";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.backgroundColor = "#fff";
+      e.currentTarget.style.color = "#dc3545";
+      e.currentTarget.style.transform = "translateY(0)";
+    }}
+  >
+    <i className="bi bi-x-circle"></i>
+    Reject
+  </button>
+
+</div>
         ) : null}
       </td>
     </tr>
