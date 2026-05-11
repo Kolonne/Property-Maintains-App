@@ -47,3 +47,7 @@ a {
     color-scheme: dark;
   }
 }
+.custom-filter-btn:hover {  
+  border-color: black !important;
+  color: black !important;
+}
