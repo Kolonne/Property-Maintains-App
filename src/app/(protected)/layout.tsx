@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@/app/globals.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 import { UserProvider } from "@/context/UserContext";
 import Header from "../../components/layout/ProtectedAppNav";
@@ -25,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.className}>
-      <body>
+      <body className="bg-white text-dark">
         <UserProvider>
           <Header />
           {children}

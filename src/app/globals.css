@@ -71,3 +71,7 @@ a {
   border: 1px solid var(--color-sand);
   box-shadow: none;
 }
+.custom-filter-btn:hover {  
+  border-color: black !important;
+  color: black !important;
+}
