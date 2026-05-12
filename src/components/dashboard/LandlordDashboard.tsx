@@ -1,51 +1,77 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PriorityBadge } from "@/components/ui/PriorityBadge";
 import { StatCard } from "@/components/ui/StatCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import type {
+  LandlordProperty,
+  LandlordRequest as QueryLandlordRequest,
+} from "@/lib/queries/landlord";
 import type { RequestPriority, RequestStatus } from "@/lib/types";
 
-type LandlordRequest = {
-  request_id: number;
-  title: string;
+type LandlordRequest = Omit<QueryLandlordRequest, "status" | "priority"> & {
   status: RequestStatus;
   priority: RequestPriority;
-  submitted_at: string;
-  property_address: string;
-  unit_number: string | null;
 };
 
-const properties = [
-  { property_id: 1, address: "Sunset Apartments", suburb: "Rockhampton", total_units: 8, occupied_units: 7, pending_requests: 2 },
-  { property_id: 2, address: "City Heights", suburb: "Brisbane", total_units: 12, occupied_units: 11, pending_requests: 1 },
-];
-
-const approvalQueue: LandlordRequest[] = [
-  {
-    request_id: 4,
-    title: "Balcony door difficult to open",
-    status: "awaiting_landlord_approval",
-    priority: "urgent",
-    submitted_at: "2026-05-06",
-    property_address: "Sunset Apartments",
-    unit_number: "A-102",
-  },
-];
-
-const recentRequests: LandlordRequest[] = [
-  ...approvalQueue,
-  {
-    request_id: 5,
-    title: "Air conditioner not cooling",
-    status: "in_progress",
-    priority: "medium",
-    submitted_at: "2026-05-04",
-    property_address: "City Heights",
-    unit_number: "B-204",
-  },
-];
+type LandlordDashboardData = {
+  properties: LandlordProperty[];
+  pendingCount: number;
+  approvalQueue: LandlordRequest[];
+  recentRequests: LandlordRequest[];
+};
 
 export default function LandlordDashboard() {
+  const [data, setData] = useState<LandlordDashboardData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadDashboardData() {
+      try {
+        const response = await fetch("/api/dashboard/landlord");
+
+        if (!response.ok) {
+          throw new Error("Failed to load landlord dashboard data");
+        }
+
+        const result = (await response.json()) as LandlordDashboardData;
+
+        if (isMounted) {
+          setData(result);
+        }
+      } catch {
+        if (isMounted) {
+          setError("Unable to load dashboard data.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadDashboardData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (isLoading) {
+    return <p>Loading dashboard...</p>;
+  }
+
+  if (error || !data) {
+    return <p className="text-danger">{error ?? "No dashboard data available."}</p>;
+  }
+
+  const { properties, pendingCount, approvalQueue, recentRequests } = data;
   const totalUnits = properties.reduce((sum, property) => sum + property.total_units, 0);
   const occupiedUnits = properties.reduce((sum, property) => sum + property.occupied_units, 0);
   const occupancyPct = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
@@ -90,7 +116,7 @@ export default function LandlordDashboard() {
           <StatCard icon={<IconUnits />} title="Total Units" value={totalUnits} />
         </div>
         <div className="col-6 col-md-3">
-          <StatCard icon={<IconAlert />} title="Pending" value={approvalQueue.length} emphasised={approvalQueue.length > 0} />
+          <StatCard icon={<IconAlert />} title="Pending" value={pendingCount} emphasised={pendingCount > 0} />
         </div>
         <div className="col-6 col-md-3">
           <StatCard icon={<IconOccupancy />} title="Occupancy" value={`${occupancyPct}%`} />
@@ -98,13 +124,23 @@ export default function LandlordDashboard() {
       </div>
 
       <SectionHeader title="Your Properties" rightHref="/properties" rightLabel="View all" />
-      <div className="row g-3 mb-5">
-        {properties.map((property) => (
-          <div key={property.property_id} className="col-md-6 col-lg-4">
-            <PropertyCard property={property} />
-          </div>
-        ))}
-      </div>
+      {properties.length > 0 ? (
+        <div className="row g-3 mb-5">
+          {properties.map((property) => (
+            <div key={property.property_id} className="col-md-6 col-lg-4">
+              <PropertyCard property={property} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="mb-5">
+          <EmptyState
+            icon={<IconBuilding />}
+            title="No properties yet"
+            message="Properties assigned to your account will appear here."
+          />
+        </div>
+      )}
 
       <div id="approvals" className="mb-5">
         <SectionHeader title="Awaiting Your Approval" count={approvalQueue.length} />
@@ -120,16 +156,24 @@ export default function LandlordDashboard() {
       </div>
 
       <SectionHeader title="Recent Requests" rightHref="/maintenance" rightLabel="View all" />
-      <div className="d-flex flex-column mb-4" style={{ gap: "8px" }}>
-        {recentRequests.map((request) => (
-          <RequestSummaryRow key={request.request_id} request={request} />
-        ))}
-      </div>
+      {recentRequests.length > 0 ? (
+        <div className="d-flex flex-column mb-4" style={{ gap: "8px" }}>
+          {recentRequests.map((request) => (
+            <RequestSummaryRow key={request.request_id} request={request} />
+          ))}
+        </div>
+      ) : (
+        <EmptyState
+          icon={<IconCheck />}
+          title="No requests yet"
+          message="Maintenance requests across your properties will appear here."
+        />
+      )}
     </>
   );
 }
 
-function PropertyCard({ property }: { property: (typeof properties)[number] }) {
+function PropertyCard({ property }: { property: LandlordProperty }) {
   const pct = property.total_units > 0 ? Math.round((property.occupied_units / property.total_units) * 100) : 0;
 
   return (

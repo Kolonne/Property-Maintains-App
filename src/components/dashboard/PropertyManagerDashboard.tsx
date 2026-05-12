@@ -1,58 +1,73 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PriorityBadge } from "@/components/ui/PriorityBadge";
 import { StatCard } from "@/components/ui/StatCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import type { PMRequest as QueryPMRequest, PMStats } from "@/lib/queries/pm";
 import type { RequestPriority, RequestStatus } from "@/lib/types";
 
-type PMRequest = {
-  request_id: number;
-  title: string;
+type PMRequest = Omit<QueryPMRequest, "status" | "priority"> & {
   status: RequestStatus;
   priority: RequestPriority;
-  submitted_at: string;
-  property_address: string;
-  unit_number: string | null;
-  tenant_name: string;
 };
 
-const openRequests: PMRequest[] = [
-  {
-    request_id: 1,
-    title: "Leaking Kitchen Sink",
-    status: "submitted",
-    priority: "high",
-    submitted_at: "2026-05-01",
-    property_address: "Sunset Apartments",
-    unit_number: "A-102",
-    tenant_name: "John Smith",
-  },
-  {
-    request_id: 2,
-    title: "Air Conditioner Issue",
-    status: "awaiting_landlord_approval",
-    priority: "urgent",
-    submitted_at: "2026-05-03",
-    property_address: "City Heights",
-    unit_number: "B-204",
-    tenant_name: "Emma Watson",
-  },
-];
-
-const recentCompleted: PMRequest[] = [
-  {
-    request_id: 3,
-    title: "Bathroom light flickering",
-    status: "completed",
-    priority: "low",
-    submitted_at: "2026-04-28",
-    property_address: "Green Villas",
-    unit_number: "C-301",
-    tenant_name: "Sara Occupant",
-  },
-];
+type PropertyManagerDashboardData = {
+  stats: PMStats;
+  openRequests: PMRequest[];
+  recentCompleted: PMRequest[];
+};
 
 export default function PropertyManagerDashboard() {
+  const [data, setData] = useState<PropertyManagerDashboardData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadDashboardData() {
+      try {
+        const response = await fetch("/api/dashboard/property-manager");
+
+        if (!response.ok) {
+          throw new Error("Failed to load property manager dashboard data");
+        }
+
+        const result = (await response.json()) as PropertyManagerDashboardData;
+
+        if (isMounted) {
+          setData(result);
+        }
+      } catch {
+        if (isMounted) {
+          setError("Unable to load dashboard data.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadDashboardData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (isLoading) {
+    return <p>Loading dashboard...</p>;
+  }
+
+  if (error || !data) {
+    return <p className="text-danger">{error ?? "No dashboard data available."}</p>;
+  }
+
+  const { stats, openRequests, recentCompleted } = data;
   const needsLandlord = openRequests.filter((request) => request.status === "awaiting_landlord_approval");
   const actionable = openRequests.filter((request) => request.status !== "awaiting_landlord_approval");
 
@@ -78,16 +93,16 @@ export default function PropertyManagerDashboard() {
 
       <div className="row g-3 mb-4">
         <div className="col-6 col-md-3">
-          <StatCard icon={<IconBuilding />} title="Properties" value={4} href="/properties" />
+          <StatCard icon={<IconBuilding />} title="Properties" value={stats.properties_managed} href="/properties" />
         </div>
         <div className="col-6 col-md-3">
-          <StatCard icon={<IconList />} title="Open Requests" value={openRequests.length} emphasised={openRequests.length > 0} href="/maintenance" />
+          <StatCard icon={<IconList />} title="Open Requests" value={stats.total_open} emphasised={stats.total_open > 0} href="/maintenance" />
         </div>
         <div className="col-6 col-md-3">
-          <StatCard icon={<IconProgress />} title="In Progress" value={openRequests.filter((request) => request.status === "in_progress").length} />
+          <StatCard icon={<IconProgress />} title="In Progress" value={stats.in_progress} />
         </div>
         <div className="col-6 col-md-3">
-          <StatCard icon={<IconAlert />} title="Awaiting LL" value={needsLandlord.length} emphasised={needsLandlord.length > 0} />
+          <StatCard icon={<IconAlert />} title="Awaiting LL" value={stats.awaiting_approval} emphasised={stats.awaiting_approval > 0} />
         </div>
       </div>
 
@@ -105,25 +120,41 @@ export default function PropertyManagerDashboard() {
       <div id="needs-landlord">
         <SectionHeader title="Waiting on Landlord Approval" count={needsLandlord.length} />
       </div>
-      <div className="d-flex flex-column mb-5" style={{ gap: "8px" }}>
-        {needsLandlord.map((request) => <PMRequestRow key={request.request_id} request={request} dimmed />)}
-      </div>
+      {needsLandlord.length > 0 ? (
+        <div className="d-flex flex-column mb-5" style={{ gap: "8px" }}>
+          {needsLandlord.map((request) => <PMRequestRow key={request.request_id} request={request} dimmed />)}
+        </div>
+      ) : (
+        <div className="mb-5">
+          <EmptyState icon={<IconCheck />} title="None waiting" message="No requests pending landlord approval." />
+        </div>
+      )}
 
       <SectionHeader title="Recently Completed" count={recentCompleted.length} />
-      <div className="d-flex flex-column mb-4" style={{ gap: "8px" }}>
-        {recentCompleted.map((request) => <PMRequestRow key={request.request_id} request={request} />)}
-      </div>
+      {recentCompleted.length > 0 ? (
+        <div className="d-flex flex-column mb-4" style={{ gap: "8px" }}>
+          {recentCompleted.map((request) => <PMRequestRow key={request.request_id} request={request} />)}
+        </div>
+      ) : (
+        <div className="mb-4">
+          <EmptyState icon={<IconCheck />} title="None completed yet" />
+        </div>
+      )}
     </>
   );
 }
 
 function PMRequestRow({ request, showAction = false, dimmed = false }: { request: PMRequest; showAction?: boolean; dimmed?: boolean }) {
+  const tenantName =
+    [request.tenant_first_name, request.tenant_last_name].filter(Boolean).join(" ") ||
+    "Unknown";
+
   return (
     <div className="d-flex align-items-center p-3" style={{ background: "#fffefb", border: `1px solid ${dimmed ? "#eceae3" : "#c5c0b1"}`, borderRadius: "5px", gap: "12px", opacity: dimmed ? 0.75 : 1 }}>
       <div className="flex-grow-1 min-w-0">
         <div style={{ fontSize: "15px", fontWeight: 600, color: "#201515" }}>{request.title}</div>
         <div style={{ fontSize: "13px", color: "#939084", marginTop: "2px" }}>
-          {request.property_address}{request.unit_number ? ` - Unit ${request.unit_number}` : ""} - {request.tenant_name} - {fmtDate(request.submitted_at)}
+          {request.property_address}{request.unit_number ? ` - Unit ${request.unit_number}` : ""} - {tenantName} - {fmtDate(request.submitted_at)}
         </div>
       </div>
       <div className="d-flex align-items-center flex-shrink-0" style={{ gap: "8px" }}>

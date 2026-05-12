@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="container py-5">
@@ -8,15 +10,15 @@ export default function Home() {
       <hr />
       <p>
         Database health check:{" "}
-        <a href="/api/health" className="link-primary">
+        <Link href="/api/health" className="link-primary">
           /api/health
-        </a>
+        </Link>
       </p>
       <p>
         Dashboard:{" "}
-        <a href="/dashboard" className="link-primary">
+        <Link href="/dashboard" className="link-primary">
           /dashboard
-        </a>
+        </Link>
       </p>
     </main>
   );

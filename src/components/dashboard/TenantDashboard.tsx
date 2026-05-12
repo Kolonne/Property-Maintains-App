@@ -1,33 +1,79 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { RequestRow } from "@/components/ui/RequestRow";
 import { StatCard } from "@/components/ui/StatCard";
-import type { MaintenanceRequest } from "@/lib/types";
+import type {
+  TenantOverview,
+  TenantRequestSummary,
+} from "@/lib/queries/tenant";
 
-const recentRequests: Pick<
-  MaintenanceRequest,
-  "request_id" | "title" | "status" | "priority" | "submitted_at"
->[] = [
-  {
-    request_id: 1,
-    title: "Kitchen sink leak",
-    status: "submitted",
-    priority: "high",
-    submitted_at: "2026-05-01",
-  },
-  {
-    request_id: 2,
-    title: "Bedroom light not working",
-    status: "in_progress",
-    priority: "medium",
-    submitted_at: "2026-05-03",
-  },
-];
+type TenantDashboardData = {
+  overview: TenantOverview | null;
+  recentRequests: TenantRequestSummary[];
+  activeIssues: number;
+};
 
 export default function TenantDashboard() {
-  const activeIssues = recentRequests.filter(
-    (request) => request.status !== "completed" && request.status !== "closed"
-  ).length;
+  const [data, setData] = useState<TenantDashboardData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadDashboardData() {
+      try {
+        const response = await fetch("/api/dashboard/tenant");
+
+        if (!response.ok) {
+          throw new Error("Failed to load tenant dashboard data");
+        }
+
+        const result = (await response.json()) as TenantDashboardData;
+
+        if (isMounted) {
+          setData(result);
+        }
+      } catch {
+        if (isMounted) {
+          setError("Unable to load dashboard data.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadDashboardData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (isLoading) {
+    return <p>Loading dashboard...</p>;
+  }
+
+  if (error || !data) {
+    return <p className="text-danger">{error ?? "No dashboard data available."}</p>;
+  }
+
+  if (!data.overview) {
+    return (
+      <EmptyState
+        icon={<IconWrench />}
+        title="Account not found"
+        message="No tenant account data is available yet. Have you run the database seed?"
+      />
+    );
+  }
+
+  const { activeIssues, overview, recentRequests } = data;
 
   return (
     <>
@@ -37,7 +83,7 @@ export default function TenantDashboard() {
             Tenant Dashboard
           </h1>
           <p style={{ fontSize: "16px", color: "#939084", margin: 0 }}>
-            Welcome back, tenant
+            Welcome back, {overview.first_name ?? "tenant"}
           </p>
         </div>
       </div>
