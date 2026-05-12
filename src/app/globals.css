@@ -71,7 +71,104 @@ a {
   border: 1px solid var(--color-sand);
   box-shadow: none;
 }
-.custom-filter-btn:hover {  
-  border-color: black !important;
-  color: black !important;
+
+.card:hover,
+.pm-stat-card:hover,
+.pm-request-row:hover {
+  border-color: var(--color-charcoal) !important;
+}
+
+.pm-stat-card,
+.pm-request-row {
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.pm-stat-card:hover,
+.pm-request-row:hover {
+  background-color: var(--color-off-white) !important;
+  transform: translateY(-1px);
+}
+
+.custom-filter-btn {
+  border-radius: 999px !important;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease,
+    background-color 160ms ease;
+}
+
+.custom-filter-btn:hover {
+  background-color: var(--color-off-white) !important;
+  border-color: var(--color-charcoal) !important;
+  color: var(--color-charcoal) !important;
+}
+
+.btn {
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.table {
+  --bs-table-bg: var(--color-bg);
+  --bs-table-hover-bg: var(--color-off-white);
+  border-color: var(--color-sand);
+}
+
+.table thead th {
+  background-color: var(--color-light-sand) !important;
+  color: var(--color-charcoal) !important;
+  border-color: var(--color-sand) !important;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.table tbody tr {
+  transition: background-color 160ms ease;
+}
+
+.table tbody tr:hover {
+  background-color: var(--color-off-white);
+}
+
+.pm-section-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text);
+}
+
+.pm-section-heading::before {
+  content: "";
+  width: 4px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  display: inline-block;
+}
+
+.alert-success {
+  background: var(--color-bg);
+  border-color: var(--color-sage);
+  color: var(--color-sage);
+}
+
+.alert-danger {
+  background: var(--color-bg);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }

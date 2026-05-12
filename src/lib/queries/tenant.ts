@@ -56,10 +56,16 @@ export interface TenantRequestSummary {
 export async function getRecentRequests(userId: number, limit = 5): Promise<TenantRequestSummary[]> {
   const sql = getSql();
   return (await sql`
-    SELECT request_id, title, status, priority, submitted_at
-    FROM maintenance_requests
-    WHERE reported_by = ${userId}
-    ORDER BY submitted_at DESC
+    SELECT mr.request_id, mr.title, mr.status, mr.priority, mr.submitted_at
+    FROM maintenance_requests mr
+    WHERE EXISTS (
+      SELECT 1
+      FROM tenancies t
+      WHERE t.unit_id = mr.unit_id
+        AND t.tenant_id = ${userId}
+        AND t.status = 'active'
+    )
+    ORDER BY mr.submitted_at DESC
     LIMIT ${limit}
   `) as TenantRequestSummary[];
 }
@@ -68,9 +74,15 @@ export async function getActiveIssueCount(userId: number): Promise<number> {
   const sql = getSql();
   const rows = (await sql`
     SELECT COUNT(*)::int AS count
-    FROM maintenance_requests
-    WHERE reported_by = ${userId}
-      AND status NOT IN ('completed', 'closed')
+    FROM maintenance_requests mr
+    WHERE EXISTS (
+      SELECT 1
+      FROM tenancies t
+      WHERE t.unit_id = mr.unit_id
+        AND t.tenant_id = ${userId}
+        AND t.status = 'active'
+    )
+      AND mr.status NOT IN ('completed', 'closed')
   `) as { count: number }[];
   return rows[0]?.count ?? 0;
 }
@@ -80,17 +92,29 @@ export async function getAllTenantRequests(userId: number, statusFilter?: string
   const sql = getSql();
   if (statusFilter && statusFilter !== "all") {
     return (await sql`
-      SELECT request_id, title, status, priority, submitted_at
-      FROM maintenance_requests
-      WHERE reported_by = ${userId}
-        AND status = ${statusFilter}
-      ORDER BY submitted_at DESC
+      SELECT mr.request_id, mr.title, mr.status, mr.priority, mr.submitted_at
+      FROM maintenance_requests mr
+      WHERE EXISTS (
+        SELECT 1
+        FROM tenancies t
+        WHERE t.unit_id = mr.unit_id
+          AND t.tenant_id = ${userId}
+          AND t.status = 'active'
+      )
+        AND mr.status = ${statusFilter}
+      ORDER BY mr.submitted_at DESC
     `) as TenantRequestSummary[];
   }
   return (await sql`
-    SELECT request_id, title, status, priority, submitted_at
-    FROM maintenance_requests
-    WHERE reported_by = ${userId}
-    ORDER BY submitted_at DESC
+    SELECT mr.request_id, mr.title, mr.status, mr.priority, mr.submitted_at
+    FROM maintenance_requests mr
+    WHERE EXISTS (
+      SELECT 1
+      FROM tenancies t
+      WHERE t.unit_id = mr.unit_id
+        AND t.tenant_id = ${userId}
+        AND t.status = 'active'
+    )
+    ORDER BY mr.submitted_at DESC
   `) as TenantRequestSummary[];
 }

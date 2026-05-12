@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 export default function PropertyManagerMaintenanceList() {
@@ -106,7 +107,8 @@ export default function PropertyManagerMaintenanceList() {
         </div>
 
         {/* Add New Button */}
-        <button
+        <Link
+          href="/maintenance/new"
           className="btn text-white"
           style={{
             backgroundColor: "orangered",
@@ -115,7 +117,7 @@ export default function PropertyManagerMaintenanceList() {
           }}
         >
           Add New
-        </button>
+        </Link>
       </div>
       </div>
 
@@ -266,9 +268,14 @@ export default function PropertyManagerMaintenanceList() {
                         Assign
                     </button>
 
-                    <button className="btn btn-sm btn-light border">
+                    <Link
+                      href={`/maintenance/${request.id}`}
+                      className="btn btn-sm btn-light border"
+                      aria-label={`View details for ${request.title}`}
+                      title="View details"
+                    >
                         <i className="bi bi-three-dots-vertical"></i>
-                    </button>
+                    </Link>
                     </div>
                 </td>
                 </tr>

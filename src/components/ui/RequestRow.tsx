@@ -15,11 +15,11 @@ function formatDate(iso: string) {
 export function RequestRow({ request, href }: RequestRowProps) {
   const inner = (
     <div
-      className="d-flex align-items-center p-3"
+      className="pm-request-row d-flex align-items-center p-3"
       style={{
         background: "#fffefb",
         border: "1px solid #c5c0b1",
-        borderLeft: `3px solid ${priorityBorderColour(request.priority)}`,
+        borderLeft: `4px solid ${priorityBorderColour(request.priority)}`,
         borderRadius: "5px",
         gap: "16px",
         marginBottom: "8px",

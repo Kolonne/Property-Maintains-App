@@ -48,7 +48,7 @@ export default async function LandlordRequestsPage({
       {requests.length > 0 ? (
         <div className="d-flex flex-column" style={{ gap: "8px" }}>
           {requests.map(r => (
-            <Link key={r.request_id} href={`/requests/${r.request_id}`} style={{ textDecoration: "none" }}>
+            <Link key={r.request_id} href={`/maintenance/${r.request_id}`} style={{ textDecoration: "none" }}>
               <div
                 className="d-flex align-items-center p-3"
                 style={{

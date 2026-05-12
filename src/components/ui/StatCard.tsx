@@ -13,13 +13,14 @@ interface StatCardProps {
 export function StatCard({ icon, title, subtitle, value, href, emphasised = false }: StatCardProps) {
   const inner = (
     <div
-      className="h-100 p-3 d-flex flex-row align-items-center"
+      className="pm-stat-card h-100 p-3 d-flex flex-row align-items-center"
       style={{
         background: "#fffefb",
         border: "1px solid #c5c0b1",
         borderRadius: "5px",
         gap: "14px",
         cursor: href ? "pointer" : "default",
+        borderLeft: emphasised ? "4px solid #ff4f00" : "4px solid #c5c0b1",
       }}
     >
       <div
@@ -27,9 +28,10 @@ export function StatCard({ icon, title, subtitle, value, href, emphasised = fals
         style={{
           width: "40px",
           height: "40px",
-          background: "#eceae3",
+          background: emphasised ? "#fffefb" : "#eceae3",
+          border: emphasised ? "1px solid #ff4f00" : "1px solid transparent",
           borderRadius: "5px",
-          color: "#36342e",
+          color: emphasised ? "#ff4f00" : "#36342e",
         }}
       >
         {icon}

@@ -122,6 +122,9 @@ export default function MaintenanceDetail({
     [request.reporter_first_name, request.reporter_last_name]
       .filter(Boolean)
       .join(" ") || request.reporter_email;
+  const canLandlordAct =
+    currentUser.role === "landlord" &&
+    request.status === "awaiting_landlord_approval";
 
   return (
     <section>
@@ -138,9 +141,41 @@ export default function MaintenanceDetail({
           </p>
         </div>
 
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2 flex-wrap justify-content-end">
           <PriorityBadge priority={request.priority} />
           <StatusBadge status={request.status} />
+          {canLandlordAct && (
+            <>
+              <button
+                className="btn btn-sm"
+                type="button"
+                style={{
+                  backgroundColor: "#7d8a6a",
+                  border: "1px solid #7d8a6a",
+                  borderRadius: "999px",
+                  color: "#fffefb",
+                  fontWeight: 700,
+                  padding: "7px 15px",
+                }}
+              >
+                Approve
+              </button>
+              <button
+                className="btn btn-sm"
+                type="button"
+                style={{
+                  backgroundColor: "#fffefb",
+                  border: "1px solid #a8593e",
+                  borderRadius: "999px",
+                  color: "#a8593e",
+                  fontWeight: 700,
+                  padding: "7px 15px",
+                }}
+              >
+                Reject
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -154,7 +189,7 @@ export default function MaintenanceDetail({
               borderRadius: "6px",
             }}
           >
-            <h2 className="h5 mb-3">Request Details</h2>
+            <h2 className="pm-section-heading h5 mb-3">Request Details</h2>
 
             <dl className="row mb-0">
               <dt className="col-sm-4 text-muted">Category</dt>
@@ -183,7 +218,7 @@ export default function MaintenanceDetail({
               borderRadius: "6px",
             }}
           >
-            <h2 className="h5 mb-3">Timeline</h2>
+            <h2 className="pm-section-heading h5 mb-3">Timeline</h2>
             <dl className="mb-0">
               <dt className="text-muted">Submitted</dt>
               <dd>{formatDate(request.submitted_at)}</dd>

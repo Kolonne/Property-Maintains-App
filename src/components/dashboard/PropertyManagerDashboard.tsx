@@ -173,7 +173,9 @@ function PMRequestRow({ request, showAction = false, dimmed = false }: { request
       <div className="d-flex align-items-center flex-shrink-0" style={{ gap: "8px" }}>
         <PriorityBadge priority={request.priority} />
         <StatusBadge status={request.status} />
-        {showAction && <Link href={`/maintenance/${request.request_id}`} className="btn btn-sm btn-outline-secondary">Manage</Link>}
+        <Link href={`/maintenance/${request.request_id}`} className="btn btn-sm btn-outline-secondary">
+          {showAction ? "Manage" : "View details"}
+        </Link>
       </div>
     </div>
   );
@@ -182,7 +184,7 @@ function PMRequestRow({ request, showAction = false, dimmed = false }: { request
 function SectionHeader({ title, count, rightHref, rightLabel }: { title: string; count: number; rightHref?: string; rightLabel?: string }) {
   return (
     <div className="d-flex justify-content-between align-items-start mb-3">
-      <h2 style={{ fontSize: "20px", fontWeight: 600, color: "#201515", margin: 0 }}>{title} ({count})</h2>
+      <h2 className="pm-section-heading" style={{ fontSize: "20px", fontWeight: 600, margin: 0 }}>{title} ({count})</h2>
       {rightHref && rightLabel && <Link href={rightHref} style={{ color: "#36342e", fontSize: "14px" }}>{rightLabel}</Link>}
     </div>
   );

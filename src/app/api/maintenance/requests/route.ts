@@ -2,9 +2,15 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import {
   createMaintenanceRequest,
+  getMaintenanceRequests,
   getMaintenanceUnitOptions,
 } from "@/lib/queries/maintenance";
-import type { RequestCategory, RequestPriority, UserRole } from "@/lib/types";
+import type {
+  RequestCategory,
+  RequestPriority,
+  RequestStatus,
+  UserRole,
+} from "@/lib/types";
 
 const categories: Array<RequestCategory | ""> = [
   "",
@@ -18,6 +24,23 @@ const categories: Array<RequestCategory | ""> = [
 
 const priorities: RequestPriority[] = ["low", "medium", "high", "urgent"];
 const roles: UserRole[] = ["tenant", "landlord", "property_manager"];
+const statuses: RequestStatus[] = [
+  "submitted",
+  "acknowledged",
+  "in_progress",
+  "awaiting_parts",
+  "awaiting_landlord_approval",
+  "landlord_approved",
+  "completed",
+  "closed",
+];
+
+const tenantInProgressStatuses: RequestStatus[] = [
+  "in_progress",
+  "awaiting_parts",
+  "awaiting_landlord_approval",
+  "landlord_approved",
+];
 
 function getValidUserRole(value: string | null): UserRole | null {
   return roles.includes(value as UserRole) ? (value as UserRole) : null;
@@ -36,13 +59,46 @@ export async function GET(request: NextRequest) {
 
   try {
     const units = await getMaintenanceUnitOptions(userId, role);
+    const requests = await getMaintenanceRequests(userId, role);
+    const status = request.nextUrl.searchParams.get("status");
+    const search = request.nextUrl.searchParams.get("search")?.trim().toLowerCase();
+    const filteredRequests = requests.filter((maintenanceRequest) => {
+      const matchesStatus =
+        !status ||
+        status === "all" ||
+        (role === "tenant" &&
+          status === "in_progress" &&
+          tenantInProgressStatuses.includes(maintenanceRequest.status)) ||
+        (statuses.includes(status as RequestStatus) &&
+          maintenanceRequest.status === status);
 
-    return NextResponse.json({ units });
+      const searchableText = [
+        maintenanceRequest.title,
+        maintenanceRequest.description,
+        maintenanceRequest.category,
+        maintenanceRequest.priority,
+        maintenanceRequest.status,
+        maintenanceRequest.property_address,
+        maintenanceRequest.property_suburb,
+        maintenanceRequest.unit_number,
+        maintenanceRequest.reporter_first_name,
+        maintenanceRequest.reporter_last_name,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      const matchesSearch = !search || searchableText.includes(search);
+
+      return matchesStatus && matchesSearch;
+    });
+
+    return NextResponse.json({ units, requests: filteredRequests });
   } catch (error) {
-    console.error("Failed to load maintenance form options", error);
+    console.error("Failed to load maintenance requests", error);
 
     return NextResponse.json(
-      { error: "Failed to load maintenance form options." },
+      { error: "Failed to load maintenance requests." },
       { status: 500 }
     );
   }

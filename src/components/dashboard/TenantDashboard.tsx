@@ -118,7 +118,7 @@ export default function TenantDashboard() {
       </div>
 
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2 style={{ fontSize: "20px", fontWeight: 600, color: "#201515", margin: 0 }}>
+        <h2 className="pm-section-heading" style={{ fontSize: "20px", fontWeight: 600, margin: 0 }}>
           Recent Maintenance Requests
         </h2>
         <Link

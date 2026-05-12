@@ -45,7 +45,7 @@ export default async function TenantRequestsPage({
       {requests.length > 0 ? (
         <div>
           {requests.map(r => (
-            <RequestRow key={r.request_id} request={r} href={`/requests/${r.request_id}`} />
+            <RequestRow key={r.request_id} request={r} href={`/maintenance/${r.request_id}`} />
           ))}
         </div>
       ) : (

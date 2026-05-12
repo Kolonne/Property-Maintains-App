@@ -52,7 +52,7 @@ export default async function PMRequestsPage({
             return (
               <Link
                 key={r.request_id}
-                href={`/requests/${r.request_id}`}
+                href={`/maintenance/${r.request_id}`}
                 style={{ textDecoration: "none" }}
               >
                 <div

@@ -45,14 +45,14 @@ const devUserGroups: Array<{
   role: DevUserRole;
   placeholder: string;
 }> = [
-  { label: "Tenant", role: "tenant", placeholder: "Select tenant user" },
-  { label: "Landlord", role: "landlord", placeholder: "Select landlord user" },
-  {
-    label: "Property Manager",
-    role: "property_manager",
-    placeholder: "Select property manager",
-  },
-];
+    { label: "Tenant", role: "tenant", placeholder: "Select tenant user" },
+    { label: "Landlord", role: "landlord", placeholder: "Select landlord user" },
+    {
+      label: "Property Manager",
+      role: "property_manager",
+      placeholder: "Select property manager",
+    },
+  ];
 
 function isActivePath(pathname: string, item: ProtectedNavLink) {
   if (item.exactMatch) {
@@ -184,7 +184,6 @@ export default function ProtectedAppNav({ children }: { children: ReactNode }) {
 
             <span className="small text-muted me-2">
               {currentUser.name}
-              {currentUser.email ? ` · ${currentUser.email}` : ""}
             </span>
 
             <button

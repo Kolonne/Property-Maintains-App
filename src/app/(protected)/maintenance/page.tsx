@@ -3,9 +3,7 @@
 import { useCurrentUser } from "@/context/UserContext";
 import { hasPermission } from "@/lib/permissions";
 import EmptyState from "@/components/shared/EmptyState";
-import TenantMaintenanceList from "@/components/maintenance/TenantMaintenanceList";
-import PropertyManagerMaintenanceList from "@/components/maintenance/PropertyManagerMaintenanceList";
-import LandlordMaintenanceList from "@/components/maintenance/LandlordMaintenanceList";
+import MaintenancePageClient from "@/components/maintenance/MaintenancePageClient";
 
 export default function MaintenancePage() {
   const { currentUser } = useCurrentUser();
@@ -25,17 +23,5 @@ export default function MaintenancePage() {
     );
   }
 
-  if (currentUser.role === "tenant") {
-    return <TenantMaintenanceList />;
-  }
-
-  if (currentUser.role === "property_manager") {
-    return <PropertyManagerMaintenanceList />;
-  }
-
-  if (currentUser.role === "landlord") {
-    return <LandlordMaintenanceList />;
-  }
-
-  return <p>Unknown role.</p>;
+  return <MaintenancePageClient currentUser={currentUser} />;
 }

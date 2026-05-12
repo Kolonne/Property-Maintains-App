@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 export default function LandlordMaintenanceList() {
@@ -104,7 +105,8 @@ export default function LandlordMaintenanceList() {
         </div>
 
         {/* Add New Button */}
-        <button
+        <Link
+          href="/maintenance/new"
           className="btn text-white"
           style={{
             backgroundColor: "orangered",
@@ -113,7 +115,7 @@ export default function LandlordMaintenanceList() {
           }}
         >
           Add New
-        </button>
+        </Link>
       </div>
       </div>
 
@@ -233,8 +235,9 @@ export default function LandlordMaintenanceList() {
 
       {/* ACTION COLUMN */}
       <td>
+        <div className="d-flex gap-2 flex-wrap">
         {request.status === "PENDING" ? (
-          <div className="d-flex gap-2">
+          <>
 
   {/* Approve */}
   <button
@@ -287,8 +290,25 @@ export default function LandlordMaintenanceList() {
     Reject
   </button>
 
-</div>
+          </>
         ) : null}
+
+          <Link
+            href={`/maintenance/${request.id}`}
+            className="btn btn-sm d-flex align-items-center gap-2 px-3 py-2"
+            style={{
+              backgroundColor: "#ECEAE3",
+              color: "#36342E",
+              border: "1px solid #C5C0B1",
+              borderRadius: "50px",
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
+          >
+            <i className="bi bi-eye"></i>
+            View
+          </Link>
+        </div>
       </td>
     </tr>
   ))}

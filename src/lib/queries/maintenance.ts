@@ -29,6 +29,14 @@ export type MaintenanceRequestDetail = MaintenanceRequest & {
   reporter_email: string;
 };
 
+export type MaintenanceRequestListItem = MaintenanceRequest & {
+  property_address: string;
+  property_suburb: string | null;
+  unit_number: string | null;
+  reporter_first_name: string | null;
+  reporter_last_name: string | null;
+};
+
 type UnitOptionRow = {
   unit_id: number;
   address: string;
@@ -71,7 +79,6 @@ export async function getMaintenanceUnitOptions(
       SELECT u.unit_id, p.address, p.suburb, u.unit_number
       FROM units u
       JOIN properties p ON p.property_id = u.property_id
-      WHERE p.manager_id = ${userId}
       ORDER BY p.address, u.unit_number
     `) as UnitOptionRow[];
 
@@ -94,6 +101,107 @@ export async function getMaintenanceUnitOptions(
       unit_id: row.unit_id,
       label: formatUnitLabel(row),
     }));
+  }
+
+  return [];
+}
+
+export async function getMaintenanceRequests(
+  userId: number,
+  role: UserRole
+): Promise<MaintenanceRequestListItem[]> {
+  const sql = getSql();
+
+  if (role === "tenant") {
+    return (await sql`
+      SELECT
+        mr.request_id,
+        mr.unit_id,
+        mr.reported_by,
+        mr.title,
+        mr.description,
+        mr.category,
+        mr.priority,
+        mr.status,
+        mr.submitted_at,
+        mr.acknowledged_at,
+        mr.completed_at,
+        mr.closed_at,
+        p.address AS property_address,
+        p.suburb AS property_suburb,
+        u.unit_number,
+        reporter.first_name AS reporter_first_name,
+        reporter.last_name AS reporter_last_name
+      FROM maintenance_requests mr
+      JOIN units u ON u.unit_id = mr.unit_id
+      JOIN properties p ON p.property_id = u.property_id
+      JOIN users reporter ON reporter.user_id = mr.reported_by
+      WHERE EXISTS (
+        SELECT 1
+        FROM tenancies t
+        WHERE t.unit_id = mr.unit_id
+          AND t.tenant_id = ${userId}
+          AND t.status = 'active'
+      )
+      ORDER BY mr.submitted_at DESC
+    `) as MaintenanceRequestListItem[];
+  }
+
+  if (role === "landlord") {
+    return (await sql`
+      SELECT
+        mr.request_id,
+        mr.unit_id,
+        mr.reported_by,
+        mr.title,
+        mr.description,
+        mr.category,
+        mr.priority,
+        mr.status,
+        mr.submitted_at,
+        mr.acknowledged_at,
+        mr.completed_at,
+        mr.closed_at,
+        p.address AS property_address,
+        p.suburb AS property_suburb,
+        u.unit_number,
+        reporter.first_name AS reporter_first_name,
+        reporter.last_name AS reporter_last_name
+      FROM maintenance_requests mr
+      JOIN units u ON u.unit_id = mr.unit_id
+      JOIN properties p ON p.property_id = u.property_id
+      JOIN users reporter ON reporter.user_id = mr.reported_by
+      WHERE p.owner_id = ${userId}
+      ORDER BY mr.submitted_at DESC
+    `) as MaintenanceRequestListItem[];
+  }
+
+  if (role === "property_manager") {
+    return (await sql`
+      SELECT
+        mr.request_id,
+        mr.unit_id,
+        mr.reported_by,
+        mr.title,
+        mr.description,
+        mr.category,
+        mr.priority,
+        mr.status,
+        mr.submitted_at,
+        mr.acknowledged_at,
+        mr.completed_at,
+        mr.closed_at,
+        p.address AS property_address,
+        p.suburb AS property_suburb,
+        u.unit_number,
+        reporter.first_name AS reporter_first_name,
+        reporter.last_name AS reporter_last_name
+      FROM maintenance_requests mr
+      JOIN units u ON u.unit_id = mr.unit_id
+      JOIN properties p ON p.property_id = u.property_id
+      JOIN users reporter ON reporter.user_id = mr.reported_by
+      ORDER BY mr.submitted_at DESC
+    `) as MaintenanceRequestListItem[];
   }
 
   return [];
@@ -172,8 +280,17 @@ export async function getMaintenanceRequestDetail(
     JOIN users reporter ON reporter.user_id = mr.reported_by
     WHERE mr.request_id = ${requestId}
       AND (
-        (${role} = 'tenant' AND mr.reported_by = ${userId})
-        OR (${role} = 'property_manager' AND p.manager_id = ${userId})
+        (
+          ${role} = 'tenant'
+          AND EXISTS (
+            SELECT 1
+            FROM tenancies t
+            WHERE t.unit_id = mr.unit_id
+              AND t.tenant_id = ${userId}
+              AND t.status = 'active'
+          )
+        )
+        OR (${role} = 'property_manager')
         OR (${role} = 'landlord' AND p.owner_id = ${userId})
       )
     LIMIT 1

@@ -19,7 +19,8 @@ export interface PMStats {
   properties_managed: number;
 }
 
-export async function getPMStats(userId: number): Promise<PMStats> {
+export async function getPMStats(_userId: number): Promise<PMStats> {
+  void _userId;
   const sql = getSql();
   const rows = (await sql`
     SELECT
@@ -30,12 +31,12 @@ export async function getPMStats(userId: number): Promise<PMStats> {
     FROM properties p
     LEFT JOIN units u               ON u.property_id = p.property_id
     LEFT JOIN maintenance_requests mr ON mr.unit_id  = u.unit_id
-    WHERE p.manager_id = ${userId}
   `) as PMStats[];
   return rows[0] ?? { total_open: 0, awaiting_approval: 0, in_progress: 0, properties_managed: 0 };
 }
 
-export async function getPMOpenRequests(userId: number): Promise<PMRequest[]> {
+export async function getPMOpenRequests(_userId: number): Promise<PMRequest[]> {
+  void _userId;
   const sql = getSql();
   return (await sql`
     SELECT
@@ -52,8 +53,7 @@ export async function getPMOpenRequests(userId: number): Promise<PMRequest[]> {
     JOIN units u       ON u.unit_id      = mr.unit_id
     JOIN properties p  ON p.property_id  = u.property_id
     LEFT JOIN users t  ON t.user_id      = mr.reported_by
-    WHERE p.manager_id = ${userId}
-      AND mr.status NOT IN ('completed','closed')
+    WHERE mr.status NOT IN ('completed','closed')
     ORDER BY
       CASE mr.priority
         WHEN 'urgent' THEN 1
@@ -66,7 +66,8 @@ export async function getPMOpenRequests(userId: number): Promise<PMRequest[]> {
 }
 
 // full list with optional status filter for /requests/pm
-export async function getAllPMRequests(userId: number, statusFilter?: string): Promise<PMRequest[]> {
+export async function getAllPMRequests(_userId: number, statusFilter?: string): Promise<PMRequest[]> {
+  void _userId;
   const sql = getSql();
   if (statusFilter && statusFilter !== "all") {
     return (await sql`
@@ -78,8 +79,7 @@ export async function getAllPMRequests(userId: number, statusFilter?: string): P
       JOIN units u      ON u.unit_id      = mr.unit_id
       JOIN properties p ON p.property_id  = u.property_id
       LEFT JOIN users t ON t.user_id      = mr.reported_by
-      WHERE p.manager_id = ${userId}
-        AND mr.status    = ${statusFilter}
+      WHERE mr.status = ${statusFilter}
       ORDER BY mr.submitted_at DESC
     `) as PMRequest[];
   }
@@ -92,12 +92,12 @@ export async function getAllPMRequests(userId: number, statusFilter?: string): P
     JOIN units u      ON u.unit_id      = mr.unit_id
     JOIN properties p ON p.property_id  = u.property_id
     LEFT JOIN users t ON t.user_id      = mr.reported_by
-    WHERE p.manager_id = ${userId}
     ORDER BY mr.submitted_at DESC
   `) as PMRequest[];
 }
 
-export async function getPMRecentCompleted(userId: number): Promise<PMRequest[]> {
+export async function getPMRecentCompleted(_userId: number): Promise<PMRequest[]> {
+  void _userId;
   const sql = getSql();
   return (await sql`
     SELECT
@@ -114,8 +114,7 @@ export async function getPMRecentCompleted(userId: number): Promise<PMRequest[]>
     JOIN units u      ON u.unit_id      = mr.unit_id
     JOIN properties p ON p.property_id  = u.property_id
     LEFT JOIN users t ON t.user_id      = mr.reported_by
-    WHERE p.manager_id = ${userId}
-      AND mr.status IN ('completed','closed')
+    WHERE mr.status IN ('completed','closed')
     ORDER BY mr.submitted_at DESC
     LIMIT 5
   `) as PMRequest[];
