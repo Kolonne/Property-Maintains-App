@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useCurrentUser, type CurrentUser } from "@/context/UserContext";
 import { hasPermission } from "@/lib/permissions";
+import type { DevUser, DevUserRole, DevUsersByRole } from "@/lib/queries/users";
 
 type NavAction = "view" | "create" | "update" | "delete" | "approve";
 
@@ -13,12 +14,13 @@ type ProtectedNavLink = {
   href: string;
   screen?: string;
   action?: NavAction;
+  exactMatch?: boolean;
 };
 
 const navItems: ProtectedNavLink[] = [
-  { label: "Dashboard", href: "/dashboard", screen: "dashboard", action: "view" },
+  { label: "Dashboard", href: "/dashboard", screen: "dashboard", action: "view", exactMatch: true },
   { label: "Maintenance", href: "/maintenance", screen: "maintenance", action: "view" },
-  { label: "New Request", href: "/maintenance/new", screen: "maintenance", action: "create" },
+  { label: "New Request", href: "/maintenance/new", screen: "maintenance", action: "create", exactMatch: true },
   { label: "Properties", href: "/properties", screen: "properties", action: "view" },
   { label: "Approvals", href: "/approvals", screen: "approvals", action: "view" },
   { label: "Users", href: "/users", screen: "users", action: "view" },
@@ -32,17 +34,102 @@ const roleLabel: Record<CurrentUser["role"], string> = {
   null: "Not logged in",
 };
 
-function isActivePath(pathname: string, href: string) {
-  if (href === "/dashboard") {
-    return pathname === href;
+const emptyUsersByRole: DevUsersByRole = {
+  tenant: [],
+  landlord: [],
+  property_manager: [],
+};
+
+const devUserGroups: Array<{
+  label: string;
+  role: DevUserRole;
+  placeholder: string;
+}> = [
+  { label: "Tenant", role: "tenant", placeholder: "Select tenant user" },
+  { label: "Landlord", role: "landlord", placeholder: "Select landlord user" },
+  {
+    label: "Property Manager",
+    role: "property_manager",
+    placeholder: "Select property manager",
+  },
+];
+
+function isActivePath(pathname: string, item: ProtectedNavLink) {
+  if (item.exactMatch) {
+    return pathname === item.href;
   }
 
-  return pathname === href || pathname.startsWith(`${href}/`);
+  if (item.href === "/maintenance") {
+    return pathname === "/maintenance" || /^\/maintenance\/(?!new$).+/.test(pathname);
+  }
+
+  if (item.href === "/dashboard") {
+    return pathname === item.href;
+  }
+
+  return pathname === item.href || pathname.startsWith(`${item.href}/`);
 }
 
 export default function ProtectedAppNav({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { currentUser, setRole } = useCurrentUser();
+  const { currentUser, setRole, setCurrentUser } = useCurrentUser();
+  const [devMenuOpen, setDevMenuOpen] = useState(false);
+  const [devUsers, setDevUsers] = useState<DevUsersByRole>(emptyUsersByRole);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(true);
+  const [usersError, setUsersError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadDevUsers() {
+      try {
+        const response = await fetch("/api/dev/users");
+
+        if (!response.ok) {
+          throw new Error("Failed to load dev users");
+        }
+
+        const result = (await response.json()) as DevUsersByRole;
+
+        if (isMounted) {
+          setDevUsers(result);
+        }
+      } catch {
+        if (isMounted) {
+          setUsersError("Unable to load users");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingUsers(false);
+        }
+      }
+    }
+
+    loadDevUsers();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  function handleSelectDevUser(role: DevUserRole, userId: string) {
+    const selectedUser = devUsers[role].find(
+      (user) => user.id === Number(userId)
+    );
+
+    if (!selectedUser) {
+      return;
+    }
+
+    setCurrentUser(selectedUser);
+    setDevMenuOpen(false);
+  }
+
+  function getSelectedValue(role: DevUserRole) {
+    return currentUser.role === role && currentUser.id !== null
+      ? String(currentUser.id)
+      : "";
+  }
 
   const visibleNavItems = navItems.filter((item) => {
     if (!item.screen || !item.action) {
@@ -95,20 +182,99 @@ export default function ProtectedAppNav({ children }: { children: ReactNode }) {
               {roleLabel[currentUser.role]}
             </span>
 
-            <span className="small text-muted me-2">{currentUser.name}</span>
+            <span className="small text-muted me-2">
+              {currentUser.name}
+              {currentUser.email ? ` · ${currentUser.email}` : ""}
+            </span>
 
-            {(["tenant", "landlord", "property_manager", "null"] as const).map((role) => (
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              type="button"
+              onClick={() => setRole("null")}
+            >
+              Logout
+            </button>
+
+            <div className="position-relative">
               <button
-                key={role}
-                className={`btn btn-sm ${
-                  currentUser.role === role ? "btn-dark" : "btn-outline-secondary"
-                }`}
+                className="btn btn-sm btn-outline-secondary"
                 type="button"
-                onClick={() => setRole(role)}
+                aria-expanded={devMenuOpen}
+                aria-label="Open dev user switcher"
+                onClick={() => setDevMenuOpen((isOpen) => !isOpen)}
               >
-                {role === "property_manager" ? "PM" : role === "landlord" ? "LL" : role === "null" ? "None" : "Tenant"}
+                Dev
               </button>
-            ))}
+
+              {devMenuOpen ? (
+                <div
+                  className="position-absolute end-0 mt-2 p-3 shadow-sm"
+                  style={{
+                    width: "320px",
+                    background: "#fffefb",
+                    border: "1px solid #c5c0b1",
+                    borderRadius: "6px",
+                    zIndex: 200,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: 700,
+                      letterSpacing: "0.5px",
+                      textTransform: "uppercase",
+                      color: "#36342e",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    Dev user switcher
+                  </div>
+
+                  {usersError ? (
+                    <p className="small text-danger mb-3">{usersError}</p>
+                  ) : null}
+
+                  {isLoadingUsers ? (
+                    <p className="small text-muted mb-3">Loading users...</p>
+                  ) : (
+                    <div className="d-flex flex-column gap-3">
+                      {devUserGroups.map((group) => (
+                        <label key={group.role} className="d-flex flex-column gap-1">
+                          <span className="small fw-semibold">{group.label}</span>
+                          <select
+                            className="form-select form-select-sm"
+                            value={getSelectedValue(group.role)}
+                            onChange={(event) =>
+                              handleSelectDevUser(group.role, event.target.value)
+                            }
+                          >
+                            <option value="">{group.placeholder}</option>
+                            {devUsers[group.role].map((user: DevUser) => (
+                              <option key={user.id} value={user.id}>
+                                {user.name} ({user.email})
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="mt-3 pt-3" style={{ borderTop: "1px solid #eceae3" }}>
+                    <button
+                      className="btn btn-sm btn-outline-secondary w-100"
+                      type="button"
+                      onClick={() => {
+                        setRole("null");
+                        setDevMenuOpen(false);
+                      }}
+                    >
+                      Use None / Logged out
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
       </header>
@@ -125,7 +291,7 @@ export default function ProtectedAppNav({ children }: { children: ReactNode }) {
         >
           <nav className="d-flex flex-column" style={{ gap: "4px" }}>
             {visibleNavItems.map((item) => {
-              const active = isActivePath(pathname, item.href);
+              const active = isActivePath(pathname, item);
 
               return (
                 <Link

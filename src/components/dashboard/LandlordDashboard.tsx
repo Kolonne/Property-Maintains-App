@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { PriorityBadge } from "@/components/ui/PriorityBadge";
 import { StatCard } from "@/components/ui/StatCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { useCurrentUser } from "@/context/UserContext";
 import type {
   LandlordProperty,
   LandlordRequest as QueryLandlordRequest,
@@ -25,6 +26,7 @@ type LandlordDashboardData = {
 };
 
 export default function LandlordDashboard() {
+  const { currentUser } = useCurrentUser();
   const [data, setData] = useState<LandlordDashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +36,16 @@ export default function LandlordDashboard() {
 
     async function loadDashboardData() {
       try {
-        const response = await fetch("/api/dashboard/landlord");
+        setIsLoading(true);
+        setError(null);
+
+        const params = new URLSearchParams();
+
+        if (currentUser.id !== null) {
+          params.set("userId", String(currentUser.id));
+        }
+
+        const response = await fetch(`/api/dashboard/landlord?${params}`);
 
         if (!response.ok) {
           throw new Error("Failed to load landlord dashboard data");
@@ -61,7 +72,7 @@ export default function LandlordDashboard() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [currentUser.id]);
 
   if (isLoading) {
     return <p>Loading dashboard...</p>;

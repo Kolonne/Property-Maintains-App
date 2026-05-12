@@ -5,9 +5,10 @@ import { createContext, useContext, useState } from "react";
 export type UserRole = "tenant" | "property_manager" | "landlord" | "null";
 
 export type CurrentUser = {
-    id: number;
+    id: number | null;
     name: string;
     role: UserRole;
+    email?: string;
 };
 
 const users: Record<UserRole, CurrentUser> = {
@@ -27,7 +28,7 @@ const users: Record<UserRole, CurrentUser> = {
         role: "landlord",
     },
     null: {
-        id: 0,
+        id: null,
         name: "Not Logged In",
         role: "null",
     },
@@ -36,6 +37,7 @@ const users: Record<UserRole, CurrentUser> = {
 type UserContextType = {
     currentUser: CurrentUser;
     setRole: (role: UserRole) => void;
+    setCurrentUser: (user: CurrentUser) => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -48,7 +50,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <UserContext.Provider value={{ currentUser, setRole }}>
+        <UserContext.Provider value={{ currentUser, setRole, setCurrentUser }}>
             {children}
         </UserContext.Provider>
     );

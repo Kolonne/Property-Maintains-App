@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { PriorityBadge } from "@/components/ui/PriorityBadge";
 import { StatCard } from "@/components/ui/StatCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { useCurrentUser } from "@/context/UserContext";
 import type { PMRequest as QueryPMRequest, PMStats } from "@/lib/queries/pm";
 import type { RequestPriority, RequestStatus } from "@/lib/types";
 
@@ -21,6 +22,7 @@ type PropertyManagerDashboardData = {
 };
 
 export default function PropertyManagerDashboard() {
+  const { currentUser } = useCurrentUser();
   const [data, setData] = useState<PropertyManagerDashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +32,18 @@ export default function PropertyManagerDashboard() {
 
     async function loadDashboardData() {
       try {
-        const response = await fetch("/api/dashboard/property-manager");
+        setIsLoading(true);
+        setError(null);
+
+        const params = new URLSearchParams();
+
+        if (currentUser.id !== null) {
+          params.set("userId", String(currentUser.id));
+        }
+
+        const response = await fetch(
+          `/api/dashboard/property-manager?${params}`
+        );
 
         if (!response.ok) {
           throw new Error("Failed to load property manager dashboard data");
@@ -57,7 +70,7 @@ export default function PropertyManagerDashboard() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [currentUser.id]);
 
   if (isLoading) {
     return <p>Loading dashboard...</p>;

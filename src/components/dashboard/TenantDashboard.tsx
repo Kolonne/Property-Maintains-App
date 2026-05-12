@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { RequestRow } from "@/components/ui/RequestRow";
 import { StatCard } from "@/components/ui/StatCard";
+import { useCurrentUser } from "@/context/UserContext";
 import type {
   TenantOverview,
   TenantRequestSummary,
@@ -17,6 +18,7 @@ type TenantDashboardData = {
 };
 
 export default function TenantDashboard() {
+  const { currentUser } = useCurrentUser();
   const [data, setData] = useState<TenantDashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +28,16 @@ export default function TenantDashboard() {
 
     async function loadDashboardData() {
       try {
-        const response = await fetch("/api/dashboard/tenant");
+        setIsLoading(true);
+        setError(null);
+
+        const params = new URLSearchParams();
+
+        if (currentUser.id !== null) {
+          params.set("userId", String(currentUser.id));
+        }
+
+        const response = await fetch(`/api/dashboard/tenant?${params}`);
 
         if (!response.ok) {
           throw new Error("Failed to load tenant dashboard data");
@@ -53,7 +64,7 @@ export default function TenantDashboard() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [currentUser.id]);
 
   if (isLoading) {
     return <p>Loading dashboard...</p>;

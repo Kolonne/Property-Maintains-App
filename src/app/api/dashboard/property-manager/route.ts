@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import {
   getPMOpenRequests,
   getPMRecentCompleted,
@@ -10,12 +11,20 @@ const DEMO_PROPERTY_MANAGER_ID = 2;
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+function getDashboardUserId(request: NextRequest) {
+  return (
+    Number(request.nextUrl.searchParams.get("userId")) ||
+    DEMO_PROPERTY_MANAGER_ID
+  );
+}
+
+export async function GET(request: NextRequest) {
   try {
+    const userId = getDashboardUserId(request);
     const [stats, openRequests, recentCompleted] = await Promise.all([
-      getPMStats(DEMO_PROPERTY_MANAGER_ID),
-      getPMOpenRequests(DEMO_PROPERTY_MANAGER_ID),
-      getPMRecentCompleted(DEMO_PROPERTY_MANAGER_ID),
+      getPMStats(userId),
+      getPMOpenRequests(userId),
+      getPMRecentCompleted(userId),
     ]);
 
     return NextResponse.json({

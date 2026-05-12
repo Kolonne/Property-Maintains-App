@@ -20,7 +20,7 @@ export const permissions: PermissionMap = {
 
   landlord: {
     dashboard: ['view'],
-    maintenance: ['view'],
+    maintenance: ['view', 'create'],
     maintenance_detail: ['view'],
     properties: ['view'],
     condition_reports: ['view'],

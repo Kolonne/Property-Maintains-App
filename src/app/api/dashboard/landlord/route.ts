@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import {
   getApprovalQueue,
   getLandlordPendingCount,
@@ -11,14 +12,19 @@ const DEMO_LANDLORD_ID = 1;
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+function getDashboardUserId(request: NextRequest) {
+  return Number(request.nextUrl.searchParams.get("userId")) || DEMO_LANDLORD_ID;
+}
+
+export async function GET(request: NextRequest) {
   try {
+    const userId = getDashboardUserId(request);
     const [properties, pendingCount, approvalQueue, recentRequests] =
       await Promise.all([
-        getLandlordProperties(DEMO_LANDLORD_ID),
-        getLandlordPendingCount(DEMO_LANDLORD_ID),
-        getApprovalQueue(DEMO_LANDLORD_ID),
-        getLandlordRecentRequests(DEMO_LANDLORD_ID, 5),
+        getLandlordProperties(userId),
+        getLandlordPendingCount(userId),
+        getApprovalQueue(userId),
+        getLandlordRecentRequests(userId, 5),
       ]);
 
     return NextResponse.json({
