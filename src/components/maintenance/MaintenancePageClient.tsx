@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { CurrentUser } from "@/context/UserContext";
-import type { MaintenanceRequest, RequestStatus } from "@/lib/types";
+import type { MaintenanceRequest, RequestStatus, UserRole } from "@/lib/types";
 import MaintenanceFilters from "./MaintenanceFilters";
 import MaintenanceTable from "./MaintenanceTable";
 
@@ -95,6 +95,9 @@ export default function MaintenancePageClient({
     );
     const [searchTerm, setSearchTerm] = useState("");
 
+    const role: UserRole =
+        currentUser.role === "null" ? "tenant" : currentUser.role;
+
     /*
       The page heading changes based on the current role.
   
@@ -102,16 +105,16 @@ export default function MaintenancePageClient({
       /maintenance page, while still seeing wording that makes sense for them.
     */
     const pageTitle =
-        currentUser.role === "tenant"
+        role === "tenant"
             ? "My Maintenance Requests"
-            : currentUser.role === "property_manager"
+            : role === "property_manager"
                 ? "All Maintenance Requests"
                 : "Requests for Your Approval";
 
     const pageDescription =
-        currentUser.role === "tenant"
+        role === "tenant"
             ? "View and track maintenance requests you have submitted."
-            : currentUser.role === "property_manager"
+            : role === "property_manager"
                 ? "View and manage maintenance requests across properties."
                 : "Review maintenance requests linked to your properties.";
 
@@ -141,6 +144,10 @@ export default function MaintenancePageClient({
             return matchesStatus && matchesSearch;
         });
     }, [statusFilter, searchTerm]);
+
+    if (currentUser.role === "null") {
+        return <p>You do not have permission to view this page.</p>;
+    }
 
     return (
         <section>
@@ -202,14 +209,14 @@ export default function MaintenancePageClient({
             </div>
 
             <MaintenanceFilters
-                role={currentUser.role}
+                role={role}
                 statusFilter={statusFilter}
                 searchTerm={searchTerm}
                 onStatusChange={setStatusFilter}
                 onSearchChange={setSearchTerm}
             />
 
-            <MaintenanceTable role={currentUser.role} requests={filteredRequests} />
+            <MaintenanceTable role={role} requests={filteredRequests} />
 
             <p className="small text-muted mt-3">
                 Showing {filteredRequests.length} of {mockMaintenanceRequests.length}{" "}

@@ -15,6 +15,7 @@ export const permissions: PermissionMap = {
     maintenance_detail: ['view', 'update'],
     properties: ['view'],
     condition_reports: ['view', 'create'],
+    profile: ['view'],
   },
 
   landlord: {
@@ -24,6 +25,7 @@ export const permissions: PermissionMap = {
     properties: ['view'],
     condition_reports: ['view'],
     approvals: ['view', 'approve'],
+    profile: ['view'],
   },
 
   property_manager: {
@@ -34,6 +36,7 @@ export const permissions: PermissionMap = {
     condition_reports: ['view', 'create', 'update'],
     users: ['view', 'create', 'update'],
     approvals: ['view', 'update', 'approve'],
+    profile: ['view'],
   },
 
   null: {

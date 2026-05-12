@@ -98,10 +98,10 @@ export default async function PMRequestsPage({
 }
 
 const SIDEBAR: SidebarLink[] = [
-  { label: "Dashboard",    href: "/dashboard/pm" },
-  { label: "All Requests", href: "/requests/pm", active: true },
+  { label: "Dashboard",    href: "/dashboard" },
+  { label: "All Requests", href: "/maintenance", active: true },
   { label: "Properties",   href: "/properties" },
   { label: "Work Orders",  href: "/work-orders" },
-  { label: "New Request",  href: "/requests/new" },
+  { label: "New Request",  href: "/maintenance/new" },
   { label: "My Profile",   href: "/profile" },
 ];

@@ -55,7 +55,7 @@ export default async function TenantRequestsPage({
             ? "Once you submit your first issue, it will appear here."
             : "Try clearing the filter or selecting a different status."}
           ctaLabel={statusFilter === "all" ? "Submit a request" : undefined}
-          ctaHref={statusFilter === "all" ? "/requests/new" : undefined}
+          ctaHref={statusFilter === "all" ? "/maintenance/new" : undefined}
         />
       )}
     </DashboardShell>
@@ -63,8 +63,8 @@ export default async function TenantRequestsPage({
 }
 
 const SIDEBAR: SidebarLink[] = [
-  { label: "Dashboard",   href: "/dashboard/tenant" },
-  { label: "My Requests", href: "/requests/tenant", active: true },
-  { label: "Submit New",  href: "/requests/new" },
+  { label: "Dashboard",   href: "/dashboard" },
+  { label: "My Requests", href: "/maintenance", active: true },
+  { label: "Submit New",  href: "/maintenance/new" },
   { label: "My Profile",  href: "/profile" },
 ];

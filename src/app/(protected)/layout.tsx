@@ -1,18 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@/app/globals.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 import { UserProvider } from "@/context/UserContext";
-import Header from "../../components/layout/ProtectedAppNav";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-inter",
-  display: "swap",
-});
+import ProtectedAppNav from "@/components/layout/ProtectedAppNav";
 
 export const metadata: Metadata = {
   title: "Property Maintains App",
@@ -25,11 +17,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.className}>
+    <html lang="en">
       <body className="bg-white text-dark">
         <UserProvider>
-          <Header />
-          {children}
+          <ProtectedAppNav>{children}</ProtectedAppNav>
         </UserProvider>
       </body>
     </html>

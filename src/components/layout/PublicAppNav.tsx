@@ -1,32 +1,34 @@
+import Link from "next/link";
+
 export default function Header() {
     return (
         <header>
             <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom px-4">
                 <div className="container-fluid">
                     {/* Logo / App Name */}
-                    <a className="navbar-brand fw-bold" href="/">
+                    <Link className="navbar-brand fw-bold" href="/">
                         PropertyCare
-                    </a>
+                    </Link>
 
                     {/* Desktop navigation */}
                     <div className="collapse navbar-collapse show">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <a className="nav-link active" href="/services">
+                                <Link className="nav-link active" href="/services">
                                     Services
-                                </a>
+                                </Link>
                             </li>
 
                             <li className="nav-item">
-                                <a className="nav-link" href="/about_us">
+                                <Link className="nav-link" href="/about_us">
                                     About Us
-                                </a>
+                                </Link>
                             </li>
 
                             <li className="nav-item">
-                                <a className="nav-link" href="/contact">
+                                <Link className="nav-link" href="/contact">
                                     Contact
-                                </a>
+                                </Link>
                             </li>
 
                         </ul>
@@ -34,9 +36,9 @@ export default function Header() {
                         {/* Right side */}
                         <div className="d-flex align-items-center gap-2">
 
-                            <a href="/login" className="btn btn-outline-primary btn-sm">
+                            <Link href="/login" className="btn btn-outline-primary btn-sm">
                                 Login
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>

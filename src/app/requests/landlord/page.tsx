@@ -90,10 +90,10 @@ export default async function LandlordRequestsPage({
 }
 
 const SIDEBAR: SidebarLink[] = [
-  { label: "Dashboard",   href: "/dashboard/landlord" },
+  { label: "Dashboard",   href: "/dashboard" },
   { label: "Properties",  href: "/properties" },
-  { label: "Approvals",   href: "/dashboard/landlord#approvals" },
-  { label: "All Requests",href: "/requests/landlord", active: true },
-  { label: "New Request", href: "/requests/new" },
+  { label: "Approvals",   href: "/approvals" },
+  { label: "All Requests",href: "/maintenance", active: true },
+  { label: "New Request", href: "/maintenance/new" },
   { label: "My Profile",  href: "/profile" },
 ];

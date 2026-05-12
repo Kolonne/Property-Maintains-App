@@ -4,8 +4,6 @@
 
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import type { CurrentUser } from "@/context/UserContext";
 
 type MaintenanceFormProps = {
@@ -19,7 +17,11 @@ export default function MaintenanceForm({ currentUser }: MaintenanceFormProps) {
     return (
         <div>
             <p>Form Here :)</p>
-            <p>Importing current user as <i>currentUser</i> for you to keep user's data to be stored upon form commit</p>
+            <p>
+                Importing current user as <i>currentUser</i> for you to keep
+                user&apos;s data to be stored upon form commit.
+            </p>
+            <p className="text-muted">Current user: {currentUser.name}</p>
         </div>
 
     );
