@@ -172,31 +172,15 @@ export default function MaintenanceForm({ currentUser }: MaintenanceFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-4"
-      style={{
-        background: "#fffefb",
-        border: "1px solid #c5c0b1",
-        borderRadius: "6px",
-      }}
+      className="pm-maintenance-request-form p-4 p-lg-5"
     >
-      <div className="mb-4">
-        <div style={{ fontSize: "13px", color: "#939084" }}>Reporting as</div>
-        <div style={{ fontSize: "16px", fontWeight: 600, color: "#201515" }}>
-          {currentUser.name}
-        </div>
-        {currentUser.email ? (
-          <div style={{ fontSize: "13px", color: "#939084" }}>
-            {currentUser.email}
-          </div>
+      <div className="pm-maintenance-form-content">
+        {error ? <div className="alert alert-danger">{error}</div> : null}
+        {successMessage ? (
+          <div className="alert alert-success">{successMessage}</div>
         ) : null}
-      </div>
 
-      {error ? <div className="alert alert-danger">{error}</div> : null}
-      {successMessage ? (
-        <div className="alert alert-success">{successMessage}</div>
-      ) : null}
-
-      <div className="row g-3">
+        <div className="row g-3">
         {!showReadOnlyTenantUnit ? (
           <div className="col-12">
               <label htmlFor="unitId" className="form-label">
@@ -359,30 +343,31 @@ export default function MaintenanceForm({ currentUser }: MaintenanceFormProps) {
             </div>
           ) : null}
         </div>
-      </div>
+        </div>
 
-      <div className="d-flex justify-content-end gap-2 mt-4">
-        <button
-          type="button"
-          className="btn btn-outline-secondary"
-          disabled={isSubmitting}
-          onClick={() => router.push("/maintenance")}
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="btn"
-          disabled={isSubmitting || isLoadingOptions || unitOptions.length === 0}
-          style={{
-            background: "#ff4f00",
-            color: "#fffefb",
-            border: "1px solid #ff4f00",
-            fontWeight: 600,
-          }}
-        >
-          {isSubmitting ? "Submitting..." : "Submit Request"}
-        </button>
+        <div className="d-flex justify-content-end gap-2 mt-4">
+          <button
+            type="button"
+            className="btn pm-maintenance-secondary-button"
+            disabled={isSubmitting}
+            onClick={() => router.push("/maintenance")}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="btn pm-dashboard-pill-button"
+            disabled={isSubmitting || isLoadingOptions || unitOptions.length === 0}
+            style={{
+              background: "#f97316",
+              color: "#ffffff",
+              border: "1px solid #f97316",
+              fontWeight: 700,
+            }}
+          >
+            {isSubmitting ? "Submitting..." : "Submit Request"}
+          </button>
+        </div>
       </div>
     </form>
   );

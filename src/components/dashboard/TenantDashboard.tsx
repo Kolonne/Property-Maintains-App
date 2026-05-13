@@ -1,12 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { RequestRow } from "@/components/ui/RequestRow";
-import { StatCard } from "@/components/ui/StatCard";
 import { useCurrentUser } from "@/context/UserContext";
+import { DashboardHero } from "./DashboardHero";
+import { DashboardKpiCard } from "./DashboardKpiCard";
+import { DashboardReportPhotoCard } from "./DashboardReportPhotoCard";
+import { DashboardSectionCard } from "./DashboardSectionCard";
+import { DashboardSideRail } from "./DashboardQuickActions";
 import type {
+  TenantDashboardStats,
   TenantOverview,
   TenantRequestSummary,
 } from "@/lib/queries/tenant";
@@ -15,7 +19,19 @@ type TenantDashboardData = {
   overview: TenantOverview | null;
   recentRequests: TenantRequestSummary[];
   activeIssues: number;
+  stats: TenantDashboardStats;
 };
+
+function formatLatestUpdate(value: string | null) {
+  if (!value) {
+    return "No updates";
+  }
+
+  return new Date(value).toLocaleDateString("en-AU", {
+    month: "short",
+    day: "numeric",
+  });
+}
 
 export default function TenantDashboard() {
   const { currentUser } = useCurrentUser();
@@ -84,91 +100,64 @@ export default function TenantDashboard() {
     );
   }
 
-  const { activeIssues, overview, recentRequests } = data;
+  const { overview, recentRequests, stats } = data;
+  const displayName = currentUser.name !== "Tenant" ? currentUser.name : overview.first_name ?? "tenant";
 
   return (
-    <>
-      <div className="d-flex justify-content-between align-items-end mb-4">
-        <div>
-          <h1 style={{ fontSize: "32px", fontWeight: 500, color: "#201515", marginBottom: "4px" }}>
-            Tenant Dashboard
-          </h1>
-          <p style={{ fontSize: "16px", color: "#939084", margin: 0 }}>
-            Welcome back, {overview.first_name ?? "tenant"}
-          </p>
+    <div className="pm-dashboard-page">
+      <DashboardHero
+        eyebrow="Tenant dashboard"
+        title={`Welcome back, ${displayName}`}
+        subtitle="Track your maintenance requests, property updates, and active issues from one clear place."
+      />
+
+      <div className="row g-3 mb-4" style={{ marginTop: "-58px", position: "relative", zIndex: 2 }}>
+        <div className="col-6 col-xl">
+          <DashboardKpiCard icon="bi-clipboard-plus" label="Open Requests" value={stats.open_requests} helper="Active maintenance" tone={stats.open_requests > 0 ? "orange" : "green"} />
+        </div>
+        <div className="col-6 col-xl">
+          <DashboardKpiCard icon="bi-clock-history" label="Latest Update" value={formatLatestUpdate(stats.latest_update_at)} helper="Most recent activity" tone="blue" />
+        </div>
+        <div className="col-6 col-xl">
+          <DashboardKpiCard icon="bi-chat-dots" label="Needs Your Info" value={stats.needs_your_info} helper={stats.needs_your_info > 0 ? "Reply requested" : "No action needed"} tone={stats.needs_your_info > 0 ? "yellow" : "green"} />
+        </div>
+        <div className="col-6 col-xl">
+          <DashboardKpiCard icon="bi-check2-circle" label="Resolved" value={stats.resolved} helper="Completed or closed" tone="green" />
         </div>
       </div>
 
-      <div className="row g-3 mb-4">
-        <div className="col-md-4">
-          <StatCard icon={<IconPlus />} title="New Request" subtitle="Submit maintenance issue" href="/maintenance/new" />
+      <div className="row g-4 align-items-start">
+        <div className="col-lg-8">
+          <DashboardSectionCard title="Recent Maintenance Requests" rightHref="/maintenance" rightLabel="View all" className="mb-4">
+            {recentRequests.length > 0 ? (
+              <div>
+                {recentRequests.map((request) => (
+                  <RequestRow
+                    key={request.request_id}
+                    request={request}
+                    href={`/maintenance/${request.request_id}`}
+                  />
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                icon={<IconWrench />}
+                title="No maintenance requests yet"
+                message="Once you submit your first issue, it will appear here."
+                ctaLabel="Submit your first request"
+                ctaHref="/maintenance/new"
+              />
+            )}
+          </DashboardSectionCard>
+          <DashboardReportPhotoCard />
         </div>
-        <div className="col-md-4">
-          <StatCard icon={<IconList />} title="View Requests" subtitle="Track your submissions" href="/maintenance" />
-        </div>
-        <div className="col-md-4">
-          <StatCard
-            icon={<IconAlert />}
-            title="Active Issues"
-            value={activeIssues}
-            subtitle={`${activeIssues} open request${activeIssues === 1 ? "" : "s"}`}
-            emphasised={activeIssues > 0}
-          />
+        <div className="col-lg-4">
+          <DashboardSideRail role={currentUser.role} />
         </div>
       </div>
-
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2 className="pm-section-heading" style={{ fontSize: "20px", fontWeight: 600, margin: 0 }}>
-          Recent Maintenance Requests
-        </h2>
-        <Link
-          href="/maintenance"
-          style={{
-            color: "#36342e",
-            fontWeight: 500,
-            fontSize: "14px",
-            textDecoration: "none",
-            borderBottom: "1px solid #c5c0b1",
-            paddingBottom: "1px",
-          }}
-        >
-          View all
-        </Link>
-      </div>
-
-      {recentRequests.length > 0 ? (
-        <div className="mb-4">
-          {recentRequests.map((request) => (
-            <RequestRow
-              key={request.request_id}
-              request={request}
-              href={`/maintenance/${request.request_id}`}
-            />
-          ))}
-        </div>
-      ) : (
-        <EmptyState
-          icon={<IconWrench />}
-          title="No maintenance requests yet"
-          message="Once you submit your first issue, it will appear here."
-          ctaLabel="Submit your first request"
-          ctaHref="/maintenance/new"
-        />
-      )}
-    </>
+      <div className="pm-dashboard-corner-watermark" aria-hidden="true" />
+    </div>
   );
-}
-
-function IconPlus() {
-  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>;
-}
-
-function IconList() {
-  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" /></svg>;
-}
-
-function IconAlert() {
-  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="9" /><path d="M12 8v4M12 16h.01" /></svg>;
 }
 
 function IconWrench() {

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import {
   getApprovalQueue,
+  getLandlordDashboardStats,
   getLandlordPendingCount,
   getLandlordProperties,
   getLandlordRecentRequests,
@@ -19,12 +20,13 @@ function getDashboardUserId(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const userId = getDashboardUserId(request);
-    const [properties, pendingCount, approvalQueue, recentRequests] =
+    const [properties, pendingCount, approvalQueue, recentRequests, stats] =
       await Promise.all([
         getLandlordProperties(userId),
         getLandlordPendingCount(userId),
         getApprovalQueue(userId),
         getLandlordRecentRequests(userId, 5),
+        getLandlordDashboardStats(userId),
       ]);
 
     return NextResponse.json({
@@ -32,6 +34,7 @@ export async function GET(request: NextRequest) {
       pendingCount,
       approvalQueue,
       recentRequests,
+      stats,
     });
   } catch (error) {
     console.error("Failed to load landlord dashboard data", error);

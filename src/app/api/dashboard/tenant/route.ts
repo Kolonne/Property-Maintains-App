@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import {
   getActiveIssueCount,
   getRecentRequests,
+  getTenantDashboardStats,
   getTenantOverview,
 } from "@/lib/queries/tenant";
 
@@ -18,16 +19,18 @@ function getDashboardUserId(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const userId = getDashboardUserId(request);
-    const [overview, recentRequests, activeIssues] = await Promise.all([
+    const [overview, recentRequests, activeIssues, stats] = await Promise.all([
       getTenantOverview(userId),
       getRecentRequests(userId, 5),
       getActiveIssueCount(userId),
+      getTenantDashboardStats(userId),
     ]);
 
     return NextResponse.json({
       overview,
       recentRequests,
       activeIssues,
+      stats,
     });
   } catch (error) {
     console.error("Failed to load tenant dashboard data", error);

@@ -19,6 +19,13 @@ export interface LandlordRequest {
   unit_number: string | null;
 }
 
+export interface LandlordDashboardStats {
+  approvals: number;
+  quote_value: string;
+  urgent_issues: number;
+  completed_this_month: number;
+}
+
 export async function getLandlordProperties(userId: number): Promise<LandlordProperty[]> {
   const sql = getSql();
   return (await sql`
@@ -51,6 +58,43 @@ export async function getLandlordPendingCount(userId: number): Promise<number> {
       AND mr.status NOT IN ('completed','closed')
   `) as { count: number }[];
   return rows[0]?.count ?? 0;
+}
+
+export async function getLandlordDashboardStats(userId: number): Promise<LandlordDashboardStats> {
+  const sql = getSql();
+  const rows = (await sql`
+    SELECT
+      COUNT(DISTINCT mr.request_id) FILTER (
+        WHERE mr.status = 'awaiting_landlord_approval'
+      )::int AS approvals,
+      COALESCE(
+        SUM(wo.estimated_cost) FILTER (
+          WHERE mr.status = 'awaiting_landlord_approval'
+        ),
+        0
+      )::text AS quote_value,
+      COUNT(DISTINCT mr.request_id) FILTER (
+        WHERE mr.status NOT IN ('completed', 'closed')
+          AND mr.priority IN ('urgent', 'high')
+      )::int AS urgent_issues,
+      COUNT(DISTINCT mr.request_id) FILTER (
+        WHERE mr.status = 'completed'
+          AND mr.completed_at >= date_trunc('month', now())
+          AND mr.completed_at < date_trunc('month', now()) + INTERVAL '1 month'
+      )::int AS completed_this_month
+    FROM maintenance_requests mr
+    JOIN units u ON u.unit_id = mr.unit_id
+    JOIN properties p ON p.property_id = u.property_id
+    LEFT JOIN work_orders wo ON wo.request_id = mr.request_id
+    WHERE p.owner_id = ${userId}
+  `) as LandlordDashboardStats[];
+
+  return rows[0] ?? {
+    approvals: 0,
+    quote_value: "0",
+    urgent_issues: 0,
+    completed_this_month: 0,
+  };
 }
 
 export async function getApprovalQueue(userId: number): Promise<LandlordRequest[]> {

@@ -17,21 +17,21 @@ export function RequestRow({ request, href }: RequestRowProps) {
     <div
       className="pm-request-row d-flex align-items-center p-3"
       style={{
-        background: "#fffefb",
-        border: "1px solid #c5c0b1",
+        background: "#ffffff",
+        border: "1px solid #e8e2da",
         borderLeft: `4px solid ${priorityBorderColour(request.priority)}`,
-        borderRadius: "5px",
+        borderRadius: "16px",
         gap: "16px",
-        marginBottom: "8px",
+        marginBottom: "10px",
         cursor: href ? "pointer" : "default",
       }}
     >
       <div className="flex-grow-1 min-w-0">
-        <div style={{ fontSize: "16px", fontWeight: 600, color: "#201515", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        <div style={{ fontSize: "16px", fontWeight: 700, color: "#1f2933", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {request.title}
         </div>
         <div className="d-flex align-items-center" style={{ gap: "12px", marginTop: "4px" }}>
-          <span style={{ fontSize: "13px", color: "#939084" }}>
+          <span style={{ fontSize: "13px", color: "#6b7280" }}>
             Submitted {formatDate(request.submitted_at)}
           </span>
           <PriorityBadge priority={request.priority} />

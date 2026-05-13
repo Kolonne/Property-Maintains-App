@@ -17,6 +17,9 @@ export interface PMStats {
   awaiting_approval: number;
   in_progress: number;
   properties_managed: number;
+  new_requests: number;
+  urgent_requests: number;
+  awaiting_quotes: number;
 }
 
 export async function getPMStats(_userId: number): Promise<PMStats> {
@@ -27,12 +30,34 @@ export async function getPMStats(_userId: number): Promise<PMStats> {
       COUNT(*) FILTER (WHERE mr.status NOT IN ('completed','closed'))::int   AS total_open,
       COUNT(*) FILTER (WHERE mr.status = 'awaiting_landlord_approval')::int  AS awaiting_approval,
       COUNT(*) FILTER (WHERE mr.status = 'in_progress')::int                 AS in_progress,
-      COUNT(DISTINCT p.property_id)::int                                      AS properties_managed
+      COUNT(DISTINCT p.property_id)::int                                      AS properties_managed,
+      COUNT(*) FILTER (WHERE mr.status = 'submitted')::int                    AS new_requests,
+      COUNT(*) FILTER (
+        WHERE mr.status NOT IN ('completed','closed')
+          AND mr.priority = 'urgent'
+      )::int                                                                  AS urgent_requests,
+      COUNT(*) FILTER (
+        WHERE mr.status NOT IN ('completed','closed')
+          AND NOT EXISTS (
+            SELECT 1
+            FROM work_orders wo
+            WHERE wo.request_id = mr.request_id
+              AND wo.estimated_cost IS NOT NULL
+          )
+      )::int                                                                  AS awaiting_quotes
     FROM properties p
     LEFT JOIN units u               ON u.property_id = p.property_id
     LEFT JOIN maintenance_requests mr ON mr.unit_id  = u.unit_id
   `) as PMStats[];
-  return rows[0] ?? { total_open: 0, awaiting_approval: 0, in_progress: 0, properties_managed: 0 };
+  return rows[0] ?? {
+    total_open: 0,
+    awaiting_approval: 0,
+    in_progress: 0,
+    properties_managed: 0,
+    new_requests: 0,
+    urgent_requests: 0,
+    awaiting_quotes: 0,
+  };
 }
 
 export async function getPMOpenRequests(_userId: number): Promise<PMRequest[]> {
