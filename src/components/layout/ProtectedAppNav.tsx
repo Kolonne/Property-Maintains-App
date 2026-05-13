@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { useCurrentUser, type CurrentUser } from "@/context/UserContext";
 import { hasPermission } from "@/lib/permissions";
@@ -75,6 +75,7 @@ function isActivePath(pathname: string, item: ProtectedNavLink) {
 
 export default function ProtectedAppNav({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { currentUser, setRole, setCurrentUser } = useCurrentUser();
   const [devMenuOpen, setDevMenuOpen] = useState(false);
   const [devUsers, setDevUsers] = useState<DevUsersByRole>(emptyUsersByRole);
@@ -438,7 +439,11 @@ export default function ProtectedAppNav({ children }: { children: ReactNode }) {
                   border: "1px solid #e8e2da",
                   color: "#1f2933",
                 }}
-                onClick={() => setRole("null")}
+                onClick={() => {
+                  setRole("null");
+                  router.push("/");
+                  router.refresh();
+                }}
               >
                 Logout
               </button>

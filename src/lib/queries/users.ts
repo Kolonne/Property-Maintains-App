@@ -51,3 +51,43 @@ export async function getDevUsersByRole(): Promise<DevUsersByRole> {
 
   return usersByRole;
 }
+
+type AuthUserRow = {
+  user_id: number;
+  first_name: string | null;
+  last_name: string | null;
+  email: string;
+  role: DevUserRole;
+};
+
+export async function authenticateUser(
+  email: string,
+  password: string
+): Promise<DevUser | null> {
+  const sql = getSql();
+
+  const rows = (await sql`
+    SELECT user_id, first_name, last_name, email, role
+    FROM users
+    WHERE lower(email) = lower(${email})
+      AND password_hash = ${password}
+      AND role IN ('tenant', 'landlord', 'property_manager')
+      AND is_active = TRUE
+    LIMIT 1
+  `) as AuthUserRow[];
+
+  const user = rows[0];
+
+  if (!user) {
+    return null;
+  }
+
+  return {
+    id: user.user_id,
+    name:
+      [user.first_name, user.last_name].filter(Boolean).join(" ") ||
+      user.email,
+    email: user.email,
+    role: user.role,
+  };
+}
