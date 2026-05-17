@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { useState } from "react";
 
@@ -239,7 +240,8 @@ export default function TenantMaintenanceList() {
                 <td className="text-secondary">{request.date}</td>
 
                 <td>
-                  <button
+                  <Link href="/requests/1">
+                    <button
                       className="btn btn-sm"
                       style={{
                         backgroundColor: "#ECEAE3",
@@ -251,7 +253,8 @@ export default function TenantMaintenanceList() {
                       }}
                     >
                       View
-                  </button>
+                    </button>
+                  </Link>
                 </td>
               </tr>
             ))}
