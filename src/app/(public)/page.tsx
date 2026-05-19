@@ -1,437 +1,577 @@
 import Link from "next/link";
 
-const roles = [
-  {
-    title: "Tenants",
-    description:
-      "Submit maintenance requests, add supporting evidence, and follow progress without chasing scattered emails.",
-    icon: <TenantIcon />,
-    accent: "#ff4f00",
-  },
-  {
-    title: "Property Managers",
-    description:
-      "Triage incoming requests, prioritise urgent issues, update statuses, and keep communication organised.",
-    icon: <ManagerIcon />,
-    accent: "#7d8a6a",
-  },
-  {
-    title: "Landlords",
-    description:
-      "Review relevant maintenance issues, see request details, and approve repair actions when required.",
-    icon: <LandlordIcon />,
-    accent: "#a8593e",
-  },
-];
-
-const features = [
-  "Centralised maintenance request tracking",
-  "Role-based dashboards",
-  "Clear status updates",
-  "Evidence and photo upload support",
-  "Landlord approval workflow",
-  "Searchable maintenance records",
-];
-
 export default function Home() {
   return (
-    <main style={{ background: "#fffefb", color: "#201515" }}>
+    <main style={{ background: "var(--color-bg, #fffefb)", color: "var(--color-text, #201515)", fontFamily: "'Inter', Helvetica, Arial, sans-serif" }}>
+
+      {/* ══════════════════════════════════════════
+          HERO
+      ══════════════════════════════════════════ */}
       <section
-        className="container"
         style={{
-          minHeight: "calc(100vh - 76px)",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-          alignItems: "center",
-          gap: "42px",
-          paddingTop: "64px",
-          paddingBottom: "54px",
+          padding: "72px 0 0",
+          borderBottom: "1px solid var(--color-sand, #c5c0b1)",
+          overflow: "hidden",
         }}
       >
-        <div>
-          <p
-            style={{
-              color: "#ff4f00",
-              fontSize: "13px",
-              fontWeight: 750,
-              letterSpacing: 0,
-              marginBottom: "14px",
-              textTransform: "uppercase",
-            }}
-          >
-            COIT13232 property maintenance prototype
-          </p>
-          <h1
-            style={{
-              color: "#201515",
-              fontSize: "56px",
-              fontWeight: 700,
-              lineHeight: 1,
-              marginBottom: "20px",
-              maxWidth: "720px",
-            }}
-          >
-            Rental maintenance, made clearer.
-          </h1>
-          <p
-            style={{
-              color: "#36342e",
-              fontSize: "20px",
-              lineHeight: 1.6,
-              marginBottom: "28px",
-              maxWidth: "620px",
-            }}
-          >
-            Submit, manage, and track property maintenance requests in one
-            central place for tenants, property managers, and landlords.
-          </p>
-          <div className="d-flex flex-wrap gap-3">
-            <Link
-              href="/login"
-              className="btn"
-              style={{
-                background: "#ff4f00",
-                border: "1px solid #ff4f00",
-                borderRadius: "999px",
-                boxShadow: "0 12px 26px rgba(255, 79, 0, 0.18)",
-                color: "#fffefb",
-                fontWeight: 750,
-                padding: "11px 20px",
-              }}
-            >
-              Log in
-            </Link>
-            <Link
-              href="#roles"
-              className="btn"
-              style={{
-                background: "#fffefb",
-                border: "1px solid #c5c0b1",
-                borderRadius: "999px",
-                color: "#36342e",
-                fontWeight: 700,
-                padding: "11px 20px",
-              }}
-            >
-              Learn more
-            </Link>
-          </div>
-        </div>
+        <div className="container" style={{ maxWidth: 1200 }}>
+          <div className="row align-items-end g-0">
 
-        <div aria-label="Maintenance request dashboard preview">
-          <div
-            style={{
-              background: "#eceae3",
-              border: "1px solid #c5c0b1",
-              borderRadius: "8px",
-              boxShadow: "0 24px 60px rgba(32, 21, 21, 0.12)",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              className="d-flex align-items-center justify-content-between"
-              style={{
-                background: "#201515",
-                color: "#fffefb",
-                padding: "16px 18px",
-              }}
-            >
-              <div>
-                <div style={{ fontSize: "13px", color: "#c5c0b1" }}>
-                  Maintenance queue
-                </div>
-                <div style={{ fontSize: "20px", fontWeight: 700 }}>
-                  12 active requests
-                </div>
-              </div>
-              <span
-                style={{
-                  background: "#ff4f00",
-                  borderRadius: "999px",
-                  color: "#fffefb",
-                  fontSize: "12px",
-                  fontWeight: 700,
-                  padding: "7px 11px",
-                }}
-              >
-                Live status
-              </span>
-            </div>
-            <div style={{ padding: "18px" }}>
-              <PreviewRow
-                title="Kitchen sink leak"
-                meta="Unit 4B, submitted by tenant"
-                status="Urgent"
-                accent="#ff4f00"
-              />
-              <PreviewRow
-                title="Air conditioner not cooling"
-                meta="Awaiting landlord approval"
-                status="Approval"
-                accent="#a8593e"
-              />
-              <PreviewRow
-                title="Bathroom light flickering"
-                meta="Assigned to property manager"
-                status="In progress"
-                accent="#7d8a6a"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+            {/* ── Left copy ── */}
+            <div className="col-lg-6" style={{ paddingBottom: 72, paddingRight: 48 }}>
 
-      <section id="roles" className="container" style={{ padding: "40px 0 72px" }}>
-        <SectionHeading
-          eyebrow="Built for each role"
-          title="One shared maintenance workflow"
-          body="Each user sees the information and actions that matter to them, while the request history stays in one transparent system."
-        />
-
-        <div className="row g-3">
-          {roles.map((role) => (
-            <div className="col-md-4" key={role.title}>
-              <article
-                className="h-100"
-                style={{
-                  background: "#fffefb",
-                  border: "1px solid #c5c0b1",
-                  borderRadius: "8px",
-                  padding: "22px",
-                  boxShadow: "0 10px 24px rgba(32, 21, 21, 0.05)",
-                }}
-              >
-                <div
-                  className="d-inline-flex align-items-center justify-content-center mb-3"
-                  style={{
-                    background: "#fffdf9",
-                    border: `1px solid ${role.accent}`,
-                    borderRadius: "8px",
-                    color: role.accent,
-                    height: "44px",
-                    width: "44px",
-                  }}
-                >
-                  {role.icon}
-                </div>
-                <h2 style={{ fontSize: "21px", fontWeight: 700, marginBottom: "10px" }}>
-                  {role.title}
-                </h2>
-                <p style={{ color: "#36342e", lineHeight: 1.6, margin: 0 }}>
-                  {role.description}
-                </p>
-              </article>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section style={{ background: "#eceae3", borderTop: "1px solid #c5c0b1", borderBottom: "1px solid #c5c0b1" }}>
-        <div className="container" style={{ padding: "70px 0" }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: "28px",
-              alignItems: "start",
-            }}
-          >
-            <div>
-              <p style={{ color: "#ff4f00", fontSize: "13px", fontWeight: 750, letterSpacing: 0, textTransform: "uppercase" }}>
-                The problem
-              </p>
-              <h2 style={{ fontSize: "34px", fontWeight: 700, marginBottom: "14px" }}>
-                Maintenance gets messy when updates live everywhere.
-              </h2>
-              <p style={{ color: "#36342e", fontSize: "17px", lineHeight: 1.7, margin: 0 }}>
-                Requests can disappear into emails, tenants may not know what is
-                happening, property managers juggle scattered messages, and
-                landlords often only see an issue when approval is needed.
-              </p>
-            </div>
-            <div
-              style={{
-                background: "#fffefb",
-                border: "1px solid #c5c0b1",
-                borderLeft: "4px solid #ff4f00",
-                borderRadius: "8px",
-                padding: "24px",
-              }}
-            >
-              <p style={{ color: "#7d8a6a", fontSize: "13px", fontWeight: 750, letterSpacing: 0, textTransform: "uppercase" }}>
-                The solution
-              </p>
-              <h2 style={{ fontSize: "28px", fontWeight: 700, marginBottom: "14px" }}>
-                A central maintenance log with role-based access.
-              </h2>
-              <p style={{ color: "#36342e", fontSize: "16px", lineHeight: 1.7, margin: 0 }}>
-                Property Maintains brings requests, statuses, supporting photos,
-                approvals, and records into one place so everyone can see the
-                right information at the right time.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="container" style={{ padding: "72px 0" }}>
-        <SectionHeading
-          eyebrow="Feature highlights"
-          title="Designed around the maintenance request lifecycle"
-          body="The prototype focuses on the core flow from submission through triage, approval, and status tracking."
-        />
-
-        <div className="row g-3">
-          {features.map((feature, index) => (
-            <div className="col-sm-6 col-lg-4" key={feature}>
+              {/* Eyebrow */}
               <div
-                className="h-100 d-flex align-items-start gap-3"
+                className="d-inline-flex align-items-center gap-2 mb-4"
                 style={{
-                  background: "#fffefb",
-                  border: "1px solid #c5c0b1",
-                  borderRadius: "8px",
-                  padding: "18px",
+                  background: "var(--color-light-sand, #eceae3)",
+                  border: "1px solid var(--color-sand, #c5c0b1)",
+                  borderRadius: 4,
+                  padding: "5px 12px",
                 }}
               >
                 <span
                   style={{
-                    background: index % 2 === 0 ? "#ff4f00" : "#201515",
-                    borderRadius: "999px",
-                    color: "#fffefb",
-                    flex: "0 0 auto",
-                    fontSize: "12px",
-                    fontWeight: 750,
-                    height: "28px",
-                    lineHeight: "28px",
-                    textAlign: "center",
-                    width: "28px",
+                    width: 7,
+                    height: 7,
+                    borderRadius: "50%",
+                    background: "var(--color-accent, #ff4f00)",
+                    display: "inline-block",
+                    flexShrink: 0,
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    letterSpacing: "0.5px",
+                    textTransform: "uppercase",
+                    color: "var(--color-charcoal, #36342e)",
                   }}
                 >
-                  {index + 1}
+                  Rental Maintenance Platform
                 </span>
-                <p style={{ color: "#201515", fontWeight: 650, lineHeight: 1.45, margin: 0 }}>
-                  {feature}
-                </p>
+              </div>
+
+              <h1
+                style={{
+                  fontSize: "clamp(2.2rem, 4vw, 3rem)",
+                  fontWeight: 500,
+                  lineHeight: 1.1,
+                  letterSpacing: "-0.5px",
+                  color: "var(--color-text, #201515)",
+                  marginBottom: 20,
+                }}
+              >
+                Property maintenance,<br />
+                <span style={{ color: "var(--color-accent, #ff4f00)" }}>finally organised.</span>
+              </h1>
+
+              <p
+                style={{
+                  fontSize: 17,
+                  lineHeight: 1.65,
+                  color: "var(--color-charcoal, #36342e)",
+                  marginBottom: 32,
+                  maxWidth: 440,
+                }}
+              >
+                One platform for tenants to report issues, property managers to
+                coordinate repairs, and landlords to approve work — no more
+                chasing emails or missed calls.
+              </p>
+
+              <div className="d-flex gap-3 flex-wrap mb-5">
+                <Link
+                  href="/login"
+                  className="btn"
+                  style={{
+                    background: "var(--color-accent, #ff4f00)",
+                    color: "#fffefb",
+                    border: "1px solid var(--color-accent, #ff4f00)",
+                    borderRadius: 4,
+                    fontWeight: 600,
+                    fontSize: 15,
+                    padding: "13px 28px",
+                  }}
+                >
+                  Get Started
+                </Link>
+                <Link
+                  href="/login"
+                  className="btn"
+                  style={{
+                    background: "transparent",
+                    color: "var(--color-text, #201515)",
+                    border: "1px solid var(--color-sand, #c5c0b1)",
+                    borderRadius: 4,
+                    fontWeight: 600,
+                    fontSize: 15,
+                    padding: "13px 28px",
+                  }}
+                >
+                  Login →
+                </Link>
+              </div>
+
+              {/* Social proof row */}
+              <div
+                className="d-flex align-items-center gap-3"
+                style={{
+                  paddingTop: 24,
+                  borderTop: "1px solid var(--color-sand, #c5c0b1)",
+                }}
+              >
+                {/* Avatar stack */}
+                <div className="d-flex" style={{ marginRight: 4 }}>
+                  {["https://i.pravatar.cc/32?img=11", "https://i.pravatar.cc/32?img=21", "https://i.pravatar.cc/32?img=31", "https://i.pravatar.cc/32?img=41"].map((src, i) => (
+                    <img
+                      key={i}
+                      src={src}
+                      alt="user"
+                      width={32}
+                      height={32}
+                      style={{
+                        borderRadius: "50%",
+                        border: "2px solid var(--color-bg, #fffefb)",
+                        marginLeft: i === 0 ? 0 : -10,
+                        objectFit: "cover",
+                      }}
+                    />
+                  ))}
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text, #201515)" }}>
+                    Used by tenants & managers
+                  </div>
+                  <div style={{ fontSize: 12, color: "var(--color-muted, #939084)" }}>
+                    across residential properties
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
+
+            {/* ── Right image ── */}
+            <div className="col-lg-6 d-none d-lg-block" style={{ position: "relative" }}>
+              <div
+                style={{
+                  borderRadius: "12px 12px 0 0",
+                  overflow: "hidden",
+                  border: "1px solid var(--color-sand, #c5c0b1)",
+                  borderBottom: "none",
+                  position: "relative",
+                }}
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
+                  alt="Modern apartment building"
+                  style={{ width: "100%", height: 420, objectFit: "cover", display: "block" }}
+                />
+                {/* Floating status card */}
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 24,
+                    left: 24,
+                    background: "var(--color-bg, #fffefb)",
+                    border: "1px solid var(--color-sand, #c5c0b1)",
+                    borderRadius: 8,
+                    padding: "14px 18px",
+                    minWidth: 220,
+                  }}
+                >
+                  <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--color-muted, #939084)", marginBottom: 8 }}>
+                    Latest Request
+                  </div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text, #201515)", marginBottom: 6 }}>
+                    🔧 Leaking kitchen tap
+                  </div>
+                  <div className="d-flex align-items-center gap-2">
+                    <span
+                      style={{
+                        background: "#fffbeb",
+                        border: "1px solid #fde68a",
+                        color: "#f59e0b",
+                        borderRadius: 4,
+                        padding: "2px 8px",
+                        fontSize: 11,
+                        fontWeight: 600,
+                      }}
+                    >
+                      In Progress
+                    </span>
+                    <span style={{ fontSize: 11, color: "var(--color-muted, #939084)" }}>Unit 4B · 2h ago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
-    </main>
-  );
-}
 
-function SectionHeading({
-  eyebrow,
-  title,
-  body,
-}: {
-  eyebrow: string;
-  title: string;
-  body: string;
-}) {
-  return (
-    <div style={{ marginBottom: "28px", maxWidth: "760px" }}>
-      <p
+      {/* ══════════════════════════════════════════
+          STATS BAR
+      ══════════════════════════════════════════ */}
+      <section
         style={{
-          color: "#ff4f00",
-          fontSize: "13px",
-          fontWeight: 750,
-          letterSpacing: 0,
-          marginBottom: "10px",
-          textTransform: "uppercase",
+          background: "var(--color-light-sand, #eceae3)",
+          borderBottom: "1px solid var(--color-sand, #c5c0b1)",
+          padding: "20px 0",
         }}
       >
-        {eyebrow}
-      </p>
-      <h2 style={{ fontSize: "34px", fontWeight: 700, marginBottom: "12px" }}>
-        {title}
-      </h2>
-      <p style={{ color: "#36342e", fontSize: "17px", lineHeight: 1.7, margin: 0 }}>
-        {body}
-      </p>
-    </div>
-  );
-}
-
-function PreviewRow({
-  title,
-  meta,
-  status,
-  accent,
-}: {
-  title: string;
-  meta: string;
-  status: string;
-  accent: string;
-}) {
-  return (
-    <div
-      className="d-flex align-items-center justify-content-between gap-3 mb-3"
-      style={{
-        background: "#fffefb",
-        border: "1px solid #c5c0b1",
-        borderLeft: `4px solid ${accent}`,
-        borderRadius: "8px",
-        padding: "14px",
-      }}
-    >
-      <div>
-        <div style={{ color: "#201515", fontWeight: 700 }}>{title}</div>
-        <div style={{ color: "#939084", fontSize: "13px", marginTop: "2px" }}>
-          {meta}
+        <div className="container" style={{ maxWidth: 1200 }}>
+          <div className="row g-3 text-center">
+            {[
+              { num: "3", label: "User Roles" },
+              { num: "100%", label: "Web-Based" },
+              { num: "Real-Time", label: "Status Updates" },
+              { num: "1", label: "Central Platform" },
+            ].map(({ num, label }) => (
+              <div className="col-6 col-md-3" key={label}>
+                <div style={{ fontSize: 20, fontWeight: 600, color: "var(--color-text, #201515)" }}>{num}</div>
+                <div style={{ fontSize: 12, fontWeight: 500, color: "var(--color-muted, #939084)", letterSpacing: "0.3px" }}>{label}</div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-      <span
+      </section>
+
+      {/* ══════════════════════════════════════════
+          HOW IT WORKS
+      ══════════════════════════════════════════ */}
+      <section
         style={{
-          border: `1px solid ${accent}`,
-          borderRadius: "999px",
-          color: accent,
-          fontSize: "11px",
-          fontWeight: 750,
-          padding: "5px 9px",
-          textTransform: "uppercase",
-          whiteSpace: "nowrap",
+          padding: "80px 0",
+          borderBottom: "1px solid var(--color-sand, #c5c0b1)",
         }}
       >
-        {status}
-      </span>
-    </div>
-  );
-}
+        <div className="container" style={{ maxWidth: 1200 }}>
+          <div className="row align-items-center g-5">
 
-function TenantIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M3 11 12 4l9 7" />
-      <path d="M5 10v10h14V10" />
-      <path d="M9 20v-6h6v6" />
-    </svg>
-  );
-}
+            <div className="col-lg-5">
+              <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--color-muted, #939084)", marginBottom: 12 }}>
+                How it works
+              </p>
+              <h2 style={{ fontSize: 28, fontWeight: 500, lineHeight: 1.2, color: "var(--color-text, #201515)", marginBottom: 16 }}>
+                From report to resolved — in one place
+              </h2>
+              <p style={{ fontSize: 15, lineHeight: 1.65, color: "var(--color-charcoal, #36342e)", marginBottom: 32 }}>
+                No more lost messages or unclear responsibilities. Every maintenance
+                request has a clear owner, a status, and a history.
+              </p>
 
-function ManagerIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M4 6h16" />
-      <path d="M4 12h16" />
-      <path d="M4 18h10" />
-      <path d="M18 16v4" />
-      <path d="M16 18h4" />
-    </svg>
-  );
-}
+              {[
+                { step: "01", text: "Tenant submits a request with photos" },
+                { step: "02", text: "Property manager reviews and assigns" },
+                { step: "03", text: "Landlord approves if required" },
+                { step: "04", text: "Work is completed and closed out" },
+              ].map(({ step, text }) => (
+                <div
+                  key={step}
+                  className="d-flex align-items-start gap-3 mb-3"
+                >
+                  <div
+                    style={{
+                      minWidth: 32,
+                      height: 32,
+                      background: "var(--color-light-sand, #eceae3)",
+                      border: "1px solid var(--color-sand, #c5c0b1)",
+                      borderRadius: 4,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: "var(--color-charcoal, #36342e)",
+                      letterSpacing: "0.3px",
+                    }}
+                  >
+                    {step}
+                  </div>
+                  <p style={{ fontSize: 15, color: "var(--color-charcoal, #36342e)", marginBottom: 0, paddingTop: 5 }}>
+                    {text}
+                  </p>
+                </div>
+              ))}
+            </div>
 
-function LandlordIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" />
-      <path d="M4 21h16" />
-      <path d="M9 7h1" />
-      <path d="M14 7h1" />
-      <path d="M9 11h1" />
-      <path d="M14 11h1" />
-      <path d="M10 21v-5h4v5" />
-    </svg>
+            <div className="col-lg-7">
+              <div
+                style={{
+                  borderRadius: 8,
+                  overflow: "hidden",
+                  border: "1px solid var(--color-sand, #c5c0b1)",
+                }}
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=900&q=80"
+                  alt="Property manager at work"
+                  style={{ width: "100%", height: 380, objectFit: "cover", display: "block" }}
+                />
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          FEATURES
+      ══════════════════════════════════════════ */}
+      <section
+        style={{
+          background: "var(--color-off-white, #fffdf9)",
+          padding: "80px 0",
+          borderBottom: "1px solid var(--color-sand, #c5c0b1)",
+        }}
+      >
+        <div className="container" style={{ maxWidth: 1200 }}>
+          <div className="text-center mb-5">
+            <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--color-muted, #939084)", marginBottom: 10 }}>
+              Features
+            </p>
+            <h2 style={{ fontSize: 28, fontWeight: 500, color: "var(--color-text, #201515)", marginBottom: 8 }}>
+              Built for the whole maintenance lifecycle
+            </h2>
+            <p style={{ fontSize: 15, color: "var(--color-muted, #939084)", maxWidth: 500, margin: "0 auto" }}>
+              Everything you need to manage maintenance requests from start to finish.
+            </p>
+          </div>
+
+          <div className="row g-3">
+            {[
+              {
+                icon: (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent,#ff4f00)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                  </svg>
+                ),
+                title: "Report Issues",
+                desc: "Tenants submit requests with photos, priority level, and a full description in minutes.",
+              },
+              {
+                icon: (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent,#ff4f00)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                ),
+                title: "Track Progress",
+                desc: "Real-time status updates at every stage — submitted, acknowledged, in progress, completed.",
+              },
+              {
+                icon: (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent,#ff4f00)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                ),
+                title: "Clear Communication",
+                desc: "All parties stay informed in one place — no more back-and-forth over email or text.",
+              },
+              {
+                icon: (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent,#ff4f00)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                ),
+                title: "Role-Based Access",
+                desc: "Tenants, property managers, and landlords each see exactly what's relevant to them.",
+              },
+              {
+                icon: (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent,#ff4f00)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18M9 21V9" />
+                  </svg>
+                ),
+                title: "Organised Dashboard",
+                desc: "A clear overview of all open, in-progress, and resolved requests at a glance.",
+              },
+              {
+                icon: (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent,#ff4f00)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 11 12 14 22 4" />
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                  </svg>
+                ),
+                title: "Approval Workflow",
+                desc: "Landlords can review and approve repair quotes directly through the platform.",
+              },
+            ].map(({ icon, title, desc }) => (
+              <div className="col-md-6 col-lg-4" key={title}>
+                <div
+                  style={{
+                    background: "var(--color-bg, #fffefb)",
+                    border: "1px solid var(--color-sand, #c5c0b1)",
+                    borderRadius: 5,
+                    padding: "24px",
+                    height: "100%",
+                  }}
+                >
+                  <div style={{ marginBottom: 14 }}>{icon}</div>
+                  <h3 style={{ fontSize: 16, fontWeight: 600, color: "var(--color-text, #201515)", marginBottom: 6 }}>
+                    {title}
+                  </h3>
+                  <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--color-charcoal, #36342e)", margin: 0 }}>
+                    {desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          USER ROLES
+      ══════════════════════════════════════════ */}
+      <section style={{ padding: "80px 0", borderBottom: "1px solid var(--color-sand, #c5c0b1)" }}>
+        <div className="container" style={{ maxWidth: 1200 }}>
+          <div className="text-center mb-5">
+            <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--color-muted, #939084)", marginBottom: 10 }}>
+              Who it's for
+            </p>
+            <h2 style={{ fontSize: 28, fontWeight: 500, color: "var(--color-text, #201515)", marginBottom: 8 }}>
+              Designed for everyone involved
+            </h2>
+          </div>
+
+          <div className="row g-4">
+            {[
+              {
+                img: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80",
+                num: "01",
+                title: "Tenants",
+                desc: "Submit maintenance requests with photos, check on progress, and get notified when work is done — all without chasing anyone.",
+              },
+              {
+                img: "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&q=80",
+                num: "02",
+                title: "Property Managers",
+                desc: "See every request across all properties, assign tradespeople, update statuses, and keep landlords in the loop automatically.",
+              },
+              {
+                img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80",
+                num: "03",
+                title: "Landlords",
+                desc: "Stay informed without being overwhelmed. Review requests, approve quotes, and track spend across your portfolio.",
+              },
+            ].map(({ img, num, title, desc }) => (
+              <div className="col-md-4" key={title}>
+                <div
+                  style={{
+                    border: "1px solid var(--color-sand, #c5c0b1)",
+                    borderRadius: 8,
+                    overflow: "hidden",
+                    height: "100%",
+                    background: "var(--color-bg, #fffefb)",
+                  }}
+                >
+                  <img
+                    src={img}
+                    alt={title}
+                    style={{ width: "100%", height: 200, objectFit: "cover", display: "block" }}
+                  />
+                  <div style={{ padding: "24px" }}>
+                    <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--color-muted, #939084)", marginBottom: 6 }}>
+                      {num}
+                    </p>
+                    <h3 style={{ fontSize: 18, fontWeight: 600, color: "var(--color-text, #201515)", marginBottom: 8 }}>
+                      {title}
+                    </h3>
+                    <p style={{ fontSize: 14, lineHeight: 1.65, color: "var(--color-charcoal, #36342e)", margin: 0 }}>
+                      {desc}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          CTA BAND
+      ══════════════════════════════════════════ */}
+      <section
+        style={{
+          background: "var(--color-text, #201515)",
+          padding: "72px 0",
+        }}
+      >
+        <div className="container text-center" style={{ maxWidth: 640 }}>
+          <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--color-muted, #939084)", marginBottom: 16 }}>
+            Get started today
+          </p>
+          <h2 style={{ fontSize: 32, fontWeight: 500, color: "#fffefb", marginBottom: 16, lineHeight: 1.2 }}>
+            Stop managing maintenance by text message
+          </h2>
+          <p style={{ fontSize: 16, color: "#939084", marginBottom: 36, lineHeight: 1.6 }}>
+            Log in to start submitting or managing maintenance requests on your property.
+          </p>
+          <div className="d-flex gap-3 justify-content-center flex-wrap">
+            <Link
+              href="/login"
+              className="btn"
+              style={{
+                background: "var(--color-accent, #ff4f00)",
+                color: "#fffefb",
+                border: "1px solid var(--color-accent, #ff4f00)",
+                borderRadius: 4,
+                fontWeight: 600,
+                fontSize: 15,
+                padding: "13px 32px",
+              }}
+            >
+              Login to your account
+            </Link>
+            <Link
+              href="/register"
+              className="btn"
+              style={{
+                background: "transparent",
+                color: "#fffefb",
+                border: "1px solid #36342e",
+                borderRadius: 4,
+                fontWeight: 600,
+                fontSize: 15,
+                padding: "13px 32px",
+              }}
+            >
+              Create an account
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          FOOTER
+      ══════════════════════════════════════════ */}
+      <footer
+        style={{
+          background: "var(--color-light-sand, #eceae3)",
+          borderTop: "1px solid var(--color-sand, #c5c0b1)",
+          padding: "24px 0",
+        }}
+      >
+        <div className="container" style={{ maxWidth: 1200 }}>
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text, #201515)" }}>
+              PropertyMaintain
+            </span>
+            <span style={{ fontSize: 13, color: "var(--color-muted, #939084)" }}>
+              © 2026 Rental Maintenance System · COIT13232 University Prototype
+            </span>
+          </div>
+        </div>
+      </footer>
+
+    </main>
   );
 }
