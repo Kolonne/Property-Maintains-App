@@ -182,8 +182,8 @@ export default function ProtectedAppNav({ children }: { children: ReactNode }) {
               <i className="bi bi-house-door" style={{ fontSize: "38px", lineHeight: 1 }} aria-hidden="true" />
             </span>
             <span className="d-flex flex-column">
-              <span style={{ color: "#111827", fontSize: "23px", fontWeight: 850, lineHeight: 1 }}>
-                Home<span style={{ color: "#f97316" }}>Clear</span>
+              <span style={{ color: "#111827", fontSize: "15px", fontWeight: 850, lineHeight: 1 }}>
+                Property<span style={{ color: "#f97316" }}>Maintains</span>
               </span>
               <span style={{ color: "#1f2933", fontSize: "10px", fontWeight: 600, lineHeight: 1.2 }}>
                 Maintenance Made Clearer
@@ -468,20 +468,20 @@ function NavIcon({ label }: { label: string }) {
       : label === "New Request"
         ? "bi-plus-lg"
         : label === "Maintenance"
-        ? "bi-clipboard2-check"
-        : label === "Properties"
-          ? "bi-house-door"
-          : label === "Quotes"
-            ? "bi-receipt"
-            : label === "Shared Documents"
-              ? "bi-folder2-open"
-              : label === "Approvals"
-                ? "bi-check2-square"
-                : label === "Users"
-                  ? "bi-people"
-                  : label === "Profile"
-                    ? "bi-person"
-                    : "bi-circle";
+          ? "bi-clipboard2-check"
+          : label === "Properties"
+            ? "bi-house-door"
+            : label === "Quotes"
+              ? "bi-receipt"
+              : label === "Shared Documents"
+                ? "bi-folder2-open"
+                : label === "Approvals"
+                  ? "bi-check2-square"
+                  : label === "Users"
+                    ? "bi-people"
+                    : label === "Profile"
+                      ? "bi-person"
+                      : "bi-circle";
 
   return <i className={`bi ${iconClass}`} aria-hidden="true" style={{ width: "18px" }} />;
 }
