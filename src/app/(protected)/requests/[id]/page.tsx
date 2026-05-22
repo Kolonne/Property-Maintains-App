@@ -105,18 +105,18 @@ export default function RequestDetailsPage() {
                 <label style={labelStyle}>Description</label>
 
                 {isEditing ? (
-                    <textarea
+                  <textarea
                     value={data.description}
                     onChange={(e) => handleChange("description", e.target.value)}
                     rows={4}
                     style={inputStyle}
-                    />
+                  />
                 ) : (
-                    <p>
+                  <p>
                     {data.description}
-                    </p>
+                  </p>
                 )}
-                </div>
+              </div>
 
               {/* GRID FIELDS */}
               <div className="row g-3" style={{ marginTop: "10px" }}>
@@ -150,11 +150,11 @@ export default function RequestDetailsPage() {
                 />
 
                 <Field
-                    label="Status"
-                    value={data.status}
-                    isEditing={false}
-                    accent="#7d8a6a"
-                    />
+                  label="Status"
+                  value={data.status}
+                  isEditing={false}
+                  accent="#7d8a6a"
+                />
 
                 <Field
                   label="Submitted Date"
@@ -211,13 +211,133 @@ export default function RequestDetailsPage() {
 
             {/* HISTORY */}
             <div style={{ ...sideCard, marginTop: "20px" }}>
-              <h5 style={{ fontWeight: 800 }}>Activity History</h5>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  marginBottom: "20px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: "#fff1eb",
+                    color: "orangered",
+                    width: "38px",
+                    height: "38px",
+                    borderRadius: "10px",
+                    fontSize: "18px",
+                  }}
+                >
+                  <i className="bi bi-clock-history"></i>
+                </div>
 
-              <ul style={{ paddingLeft: "18px", color: "#6b665e" }}>
-                <li>Request created</li>
-                <li>Assigned to manager</li>
-                <li>Status updated</li>
-              </ul>
+                <h5
+                  style={{
+                    fontWeight: 800,
+                    marginBottom: 0,
+                  }}
+                >
+                  Activity History
+                </h5>
+              </div>
+
+              <div
+                style={{
+                  position: "relative",
+                  marginTop: "25px",
+                  paddingLeft: "30px",
+                }}
+              >
+                {/* Vertical Line */}
+                <div
+                  style={{
+                    position: "absolute",
+                    left: "8px",
+                    top: "10px",
+                    width: "2px",
+                    height: "85%",
+                    backgroundColor: "#d6d6d6",
+                  }}
+                />
+
+                {/* Item */}
+                {[
+                  {
+                    title: "Request Submitted",
+                    time: "18 May 2026, 9:42 AM",
+                  },
+                  {
+                    title: "Assigned to Manager",
+                    time: "18 May 2026, 10:15 AM",
+                  },
+                  {
+                    title: "Status Updated",
+                    time: "19 May 2026, 11:30 AM",
+                  },
+                ].map((item, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      position: "relative",
+                      marginBottom: "28px",
+                    }}
+                  >
+                    {/* Dot */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: "-30px",
+                        top: "4px",
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "50%",
+                        backgroundColor: "#fff1eb",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "8px",
+                          height: "8px",
+                          borderRadius: "50%",
+                          backgroundColor: "orangered",
+                        }}
+                      />
+                    </div>
+
+                    {/* Badge */}
+
+
+                    {/* Content */}
+                    <div style={{ marginTop: "10px" }}>
+                      <div
+                        style={{
+                          fontWeight: 600,
+                          color: "#222",
+                        }}
+                      >
+                        {item.title}
+                      </div>
+
+                      <div
+                        style={{
+                          color: "#8b8b8b",
+                          fontSize: "14px",
+                          marginTop: "4px",
+                        }}
+                      >
+                        {item.time}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
