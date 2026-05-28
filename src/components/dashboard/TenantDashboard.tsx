@@ -100,6 +100,18 @@ export default function TenantDashboard() {
     );
   }
 
+  if (!data.overview.unit_id) {
+    return (
+      <div className="pm-dashboard-page py-4">
+        <EmptyState
+          icon={<IconWrench />}
+          title="No active tenancy"
+          message="Your dashboard will appear once a Property Manager links your account to an active tenancy."
+        />
+      </div>
+    );
+  }
+
   const { overview, recentRequests, stats } = data;
   const displayName = currentUser.name !== "Tenant" ? currentUser.name : overview.first_name ?? "tenant";
 

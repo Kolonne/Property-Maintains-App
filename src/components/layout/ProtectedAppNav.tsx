@@ -22,7 +22,6 @@ const navItems: ProtectedNavLink[] = [
   { label: "Dashboard", href: "/dashboard", screen: "dashboard", action: "view", exactMatch: true },
   { label: "Maintenance", href: "/maintenance", screen: "maintenance", action: "view" },
   { label: "New Request", href: "/maintenance/new", screen: "maintenance", action: "create", exactMatch: true },
-  { label: "Shared Documents", href: "/profile", screen: "condition_reports", action: "view", roles: ["tenant"] },
   { label: "Properties", href: "/properties", screen: "properties", action: "view" },
   { label: "Quotes", href: "/quotes", screen: "quotes", action: "view" },
   { label: "Approvals", href: "/approvals", screen: "approvals", action: "view" },

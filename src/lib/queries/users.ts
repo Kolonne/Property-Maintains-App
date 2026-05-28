@@ -12,6 +12,23 @@ export type DevUser = {
 
 export type DevUsersByRole = Record<DevUserRole, DevUser[]>;
 
+export type UserProfile = {
+  user_id: number;
+  first_name: string | null;
+  last_name: string | null;
+  email: string;
+  phone: string | null;
+  role: DevUserRole;
+  created_at: string;
+};
+
+export type UserProfileInput = {
+  first_name: string | null;
+  last_name: string | null;
+  email: string;
+  phone: string | null;
+};
+
 type DevUserRow = {
   user_id: number;
   first_name: string | null;
@@ -90,4 +107,45 @@ export async function authenticateUser(
     email: user.email,
     role: user.role,
   };
+}
+
+export async function getUserProfile(
+  userId: number,
+  role: DevUserRole
+): Promise<UserProfile | null> {
+  const sql = getSql();
+
+  const rows = (await sql`
+    SELECT user_id, first_name, last_name, email, phone, role, created_at
+    FROM users
+    WHERE user_id = ${userId}
+      AND role = ${role}
+      AND is_active = TRUE
+    LIMIT 1
+  `) as UserProfile[];
+
+  return rows[0] ?? null;
+}
+
+export async function updateUserProfile(
+  userId: number,
+  role: DevUserRole,
+  input: UserProfileInput
+): Promise<UserProfile | null> {
+  const sql = getSql();
+
+  const rows = (await sql`
+    UPDATE users
+    SET
+      first_name = ${input.first_name},
+      last_name = ${input.last_name},
+      email = ${input.email},
+      phone = ${input.phone}
+    WHERE user_id = ${userId}
+      AND role = ${role}
+      AND is_active = TRUE
+    RETURNING user_id, first_name, last_name, email, phone, role, created_at
+  `) as UserProfile[];
+
+  return rows[0] ?? null;
 }
