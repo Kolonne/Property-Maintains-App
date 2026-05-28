@@ -37,7 +37,15 @@ export default function MaintenanceRowActions({
         return (
             <Link
                 href={`/maintenance/${request.request_id}`}
-                className="btn btn-outline-primary btn-sm"
+                className="btn btn-sm"
+                style={{
+                    backgroundColor: "#eceae3",
+                    border: "1px solid #c5c0b1",
+                    borderRadius: "999px",
+                    color: "#36342e",
+                    fontWeight: 650,
+                    padding: "6px 14px",
+                }}
             >
                 View
             </Link>
@@ -50,13 +58,32 @@ export default function MaintenanceRowActions({
 
         return (
             <div className="d-flex gap-2">
-                <button className="btn btn-outline-primary btn-sm" type="button">
+                <button
+                    className="btn btn-sm"
+                    type="button"
+                    style={{
+                        backgroundColor: "#fffefb",
+                        border: "1px solid #ff4f00",
+                        borderRadius: "999px",
+                        color: "#ff4f00",
+                        fontWeight: 650,
+                        padding: "6px 14px",
+                    }}
+                >
                     {shouldAssign ? "Assign" : "Update"}
                 </button>
 
                 <Link
                     href={`/maintenance/${request.request_id}`}
-                    className="btn btn-outline-secondary btn-sm"
+                    className="btn btn-sm"
+                    style={{
+                        backgroundColor: "#eceae3",
+                        border: "1px solid #c5c0b1",
+                        borderRadius: "999px",
+                        color: "#36342e",
+                        fontWeight: 650,
+                        padding: "6px 14px",
+                    }}
                 >
                     View
                 </Link>
@@ -68,26 +95,52 @@ export default function MaintenanceRowActions({
         const needsApproval = request.status === "awaiting_landlord_approval";
 
         return (
-            <div className="d-flex gap-2">
-                <button
-                    className="btn btn-dark btn-sm"
-                    type="button"
-                    disabled={!needsApproval}
-                >
-                    Approve
-                </button>
+            <div className="d-flex gap-2 flex-wrap">
+                {needsApproval && (
+                    <>
+                        <button
+                            className="btn btn-sm"
+                            type="button"
+                            style={{
+                                backgroundColor: "#7d8a6a",
+                                border: "1px solid #7d8a6a",
+                                borderRadius: "999px",
+                                color: "#fffefb",
+                                fontWeight: 650,
+                                padding: "6px 14px",
+                            }}
+                        >
+                            Approve
+                        </button>
 
-                <button
-                    className="btn btn-outline-secondary btn-sm"
-                    type="button"
-                    disabled={!needsApproval}
-                >
-                    Reject
-                </button>
+                        <button
+                            className="btn btn-sm"
+                            type="button"
+                            style={{
+                                backgroundColor: "#fffefb",
+                                border: "1px solid #a8593e",
+                                borderRadius: "999px",
+                                color: "#a8593e",
+                                fontWeight: 650,
+                                padding: "6px 14px",
+                            }}
+                        >
+                            Reject
+                        </button>
+                    </>
+                )}
 
                 <Link
                     href={`/maintenance/${request.request_id}`}
-                    className="btn btn-outline-primary btn-sm"
+                    className="btn btn-sm"
+                    style={{
+                        backgroundColor: "#eceae3",
+                        border: "1px solid #c5c0b1",
+                        borderRadius: "999px",
+                        color: "#36342e",
+                        fontWeight: 650,
+                        padding: "6px 14px",
+                    }}
                 >
                     View
                 </Link>

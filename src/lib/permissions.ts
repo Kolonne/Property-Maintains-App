@@ -13,17 +13,19 @@ export const permissions: PermissionMap = {
     dashboard: ['view'],
     maintenance: ['view', 'create'],
     maintenance_detail: ['view', 'update'],
-    properties: ['view'],
     condition_reports: ['view', 'create'],
+    profile: ['view'],
   },
 
   landlord: {
     dashboard: ['view'],
-    maintenance: ['view'],
+    maintenance: ['view', 'create'],
     maintenance_detail: ['view'],
     properties: ['view'],
+    quotes: ['view'],
     condition_reports: ['view'],
     approvals: ['view', 'approve'],
+    profile: ['view'],
   },
 
   property_manager: {
@@ -31,9 +33,11 @@ export const permissions: PermissionMap = {
     maintenance: ['view', 'create', 'update', 'delete'],
     maintenance_detail: ['view', 'update', 'delete'],
     properties: ['view', 'create', 'update'],
+    quotes: ['view', 'create', 'update'],
     condition_reports: ['view', 'create', 'update'],
     users: ['view', 'create', 'update'],
     approvals: ['view', 'update', 'approve'],
+    profile: ['view'],
   },
 
   null: {
@@ -41,6 +45,7 @@ export const permissions: PermissionMap = {
     maintenance: [],
     maintenance_detail: [],
     properties: [],
+    quotes: [],
     condition_reports: [],
     users: [],
     approvals: [],

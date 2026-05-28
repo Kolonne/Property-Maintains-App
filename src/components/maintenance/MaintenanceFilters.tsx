@@ -10,12 +10,23 @@ type MaintenanceFiltersProps = {
     onSearchChange: (value: string) => void;
 };
 
-const tenantAndManagerStatusOptions: Array<RequestStatus | "all"> = [
+const tenantStatusOptions: Array<RequestStatus | "all"> = [
+    "all",
+    "submitted",
+    "acknowledged",
+    "in_progress",
+    "completed",
+    "closed",
+];
+
+const managerStatusOptions: Array<RequestStatus | "all"> = [
     "all",
     "submitted",
     "acknowledged",
     "in_progress",
     "awaiting_parts",
+    "awaiting_landlord_approval",
+    "landlord_approved",
     "completed",
     "closed",
 ];
@@ -46,33 +57,52 @@ export default function MaintenanceFilters({
     onStatusChange,
     onSearchChange,
 }: MaintenanceFiltersProps) {
-    /*
-      UI DEV NOTES:
-  
-      This component shows the filter/search area for the maintenance list.
-  
-      For now, filters are intentionally simple:
-      - status filter
-      - search box
-  
-      Property address filtering is not included yet because MaintenanceRequest
-      does not include property address. That will come later when request data
-      is joined with Unit and Property data.
-    */
-
     const statusOptions =
-        role === "landlord" ? landlordStatusOptions : tenantAndManagerStatusOptions;
+        role === "tenant"
+            ? tenantStatusOptions
+            : role === "landlord"
+                ? landlordStatusOptions
+                : managerStatusOptions;
 
     return (
-        <div className="border rounded p-3 mb-3">
-            <div className="d-flex flex-wrap gap-2 align-items-center">
-                <div className="btn-group" role="group" aria-label="Status filters">
+        <div
+            className="mb-3"
+            style={{
+                background: "#fffefb",
+                border: "1px solid #c5c0b1",
+                borderLeft: "4px solid #ff4f00",
+                borderRadius: "8px",
+                boxShadow: "0 8px 22px rgba(32, 21, 21, 0.06)",
+                padding: "14px",
+            }}
+        >
+            <div className="d-flex flex-wrap gap-3 align-items-center">
+                <div
+                    className="d-flex flex-wrap"
+                    role="group"
+                    aria-label="Status filters"
+                    style={{
+                        background: "#eceae3",
+                        border: "1px solid #d8d3c6",
+                        borderRadius: "999px",
+                        gap: "4px",
+                        padding: "4px",
+                    }}
+                >
                     {statusOptions.map((status) => (
                         <button
                             key={status}
                             type="button"
-                            className={`btn btn-sm ${statusFilter === status ? "btn-primary" : "btn-outline-primary"
-                                }`}
+                            className="btn btn-sm"
+                            style={{
+                                backgroundColor:
+                                    statusFilter === status ? "#201515" : "transparent",
+                                border: "1px solid transparent",
+                                borderRadius: "999px",
+                                color: statusFilter === status ? "#fffefb" : "#36342e",
+                                fontWeight: 650,
+                                padding: "6px 12px",
+                            }}
                             onClick={() => onStatusChange(status)}
                         >
                             {formatStatusLabel(status)}
@@ -82,7 +112,15 @@ export default function MaintenanceFilters({
 
                 <input
                     className="form-control form-control-sm ms-auto"
-                    style={{ maxWidth: "280px" }}
+                    style={{
+                        maxWidth: "300px",
+                        background: "#fffdf9",
+                        border: "1px solid #c5c0b1",
+                        borderRadius: "999px",
+                        color: "#201515",
+                        minHeight: "38px",
+                        paddingLeft: "14px",
+                    }}
                     type="search"
                     placeholder="Search requests..."
                     value={searchTerm}

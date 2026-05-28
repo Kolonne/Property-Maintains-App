@@ -6,22 +6,22 @@ import EmptyState from "@/components/shared/EmptyState";
 import MaintenancePageClient from "@/components/maintenance/MaintenancePageClient";
 
 export default function MaintenancePage() {
-    const { currentUser } = useCurrentUser();
+  const { currentUser } = useCurrentUser();
 
-    const canViewMaintenance = hasPermission(
-        currentUser.role,
-        "maintenance",
-        "view"
+  const canViewMaintenance = hasPermission(
+    currentUser.role,
+    "maintenance",
+    "view"
+  );
+
+  if (!canViewMaintenance) {
+    return (
+      <EmptyState
+        title="Access denied"
+        message="You do not have permission to view maintenance requests."
+      />
     );
+  }
 
-    if (!canViewMaintenance) {
-        return (
-            <EmptyState
-                title="Access denied"
-                message="You do not have permission to view maintenance requests."
-            />
-        );
-    }
-
-    return <MaintenancePageClient currentUser={currentUser} />;
+  return <MaintenancePageClient currentUser={currentUser} />;
 }
