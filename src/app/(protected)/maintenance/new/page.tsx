@@ -29,11 +29,11 @@ export default function NewMaintenancePage() {
     }
 
     return (
-        <section>
-            <div className="mb-4">
-                <h1 className="h3 mb-1">New Maintenance Request</h1>
+        <section className="pm-dashboard-page pm-maintenance-new-page mx-auto px-2 px-lg-3 py-3">
+            <div className="pm-maintenance-new-header mb-4">
+                <h1 className="h3 mb-2">New Maintenance Request</h1>
                 <p className="text-muted mb-0">
-                    Submit a new maintenance issue for review.
+                    Submit a new maintenance issue with clear details so it can be reviewed quickly.
                 </p>
             </div>
 

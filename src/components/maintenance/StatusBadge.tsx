@@ -1,12 +1,11 @@
-// This is a simple badge component to display the status of a maintenance request. 
-// It's purpose is to have a repeatable UI element for showing request status in the list and details views.
-
 import type { RequestStatus } from "@/lib/types";
+import { StatusBadge as SharedStatusBadge } from "@/components/ui/StatusBadge";
 
 type StatusBadgeProps = {
     status: RequestStatus;
+    label?: string;
 };
 
-export default function StatusBadge({ status }: StatusBadgeProps) {
-    return <span className="badge bg-secondary">{status}</span>;
+export default function StatusBadge({ status, label }: StatusBadgeProps) {
+    return <SharedStatusBadge status={status} label={label} />;
 }

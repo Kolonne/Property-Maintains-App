@@ -1,46 +1,79 @@
-export default function Header() {
-    return (
-        <header>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom px-4">
-                <div className="container-fluid">
-                    {/* Logo / App Name */}
-                    <a className="navbar-brand fw-bold" href="/">
-                        PropertyCare
-                    </a>
+import Link from "next/link";
 
-                    {/* Desktop navigation */}
-                    <div className="collapse navbar-collapse show">
-                        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li className="nav-item">
-                                <a className="nav-link active" href="/services">
-                                    Services
-                                </a>
-                            </li>
+const navLinks = [
+  { label: "Services", href: "/services" },
+  { label: "About Us", href: "/about_us" },
+  { label: "Contact", href: "/contact" },
+];
 
-                            <li className="nav-item">
-                                <a className="nav-link" href="/about_us">
-                                    About Us
-                                </a>
-                            </li>
+export default function PublicAppNav() {
+  return (
+    <header
+      style={{
+        background: "#fffefb",
+        borderBottom: "1px solid #c5c0b1",
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
+      }}
+    >
+      <nav className="container-fluid d-flex flex-wrap align-items-center justify-content-between gap-3 px-4 py-3">
+        <div className="d-flex flex-wrap align-items-center gap-4">
+          <Link
+            href="/"
+            className="d-flex align-items-center text-decoration-none"
+            style={{ gap: "10px" }}
+          >
+            <span
+              style={{
+                width: "28px",
+                height: "28px",
+                background: "#ff4f00",
+                borderRadius: "6px",
+                display: "inline-block",
+              }}
+            />
+            <span style={{ fontSize: "18px", fontWeight: 600, color: "#201515" }}>
+              Property Maintains
+            </span>
+          </Link>
 
-                            <li className="nav-item">
-                                <a className="nav-link" href="/contact">
-                                    Contact
-                                </a>
-                            </li>
+          <div className="d-flex align-items-center gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="px-3 py-2 text-decoration-none"
+                style={{
+                  color: "#36342e",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  borderRadius: "6px",
+                }}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
 
-                        </ul>
-
-                        {/* Right side */}
-                        <div className="d-flex align-items-center gap-2">
-
-                            <a href="/login" className="btn btn-outline-primary btn-sm">
-                                Login
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </header>
-    )
-};
+        <div className="d-flex align-items-center">
+          <Link
+            href="/login"
+            className="btn btn-sm"
+            style={{
+              background: "#ff4f00",
+              color: "#fffefb",
+              border: "1px solid #ff4f00",
+              borderRadius: "6px",
+              fontWeight: 600,
+              padding: "6px 14px",
+            }}
+          >
+            Login
+          </Link>
+        </div>
+      </nav>
+    </header>
+  );
+}
