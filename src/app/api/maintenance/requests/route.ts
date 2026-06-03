@@ -28,7 +28,6 @@ const statuses: RequestStatus[] = [
   "submitted",
   "acknowledged",
   "in_progress",
-  "awaiting_parts",
   "awaiting_landlord_approval",
   "landlord_approved",
   "completed",
@@ -37,7 +36,6 @@ const statuses: RequestStatus[] = [
 
 const tenantInProgressStatuses: RequestStatus[] = [
   "in_progress",
-  "awaiting_parts",
   "awaiting_landlord_approval",
   "landlord_approved",
 ];

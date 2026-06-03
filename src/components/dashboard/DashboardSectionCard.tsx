@@ -20,7 +20,7 @@ export function DashboardSectionCard({
 }: DashboardSectionCardProps) {
   return (
     <section className={`pm-dashboard-card p-3 p-lg-4 ${className}`}>
-      <div className="d-flex justify-content-between align-items-start gap-3 mb-3">
+      <div className="pm-dashboard-section-heading d-flex justify-content-between align-items-start gap-3 mb-3">
         <h2
           style={{
             color: "#1f2933",

@@ -20,7 +20,6 @@ export type RequestStatus =
   | "submitted"
   | "acknowledged"
   | "in_progress"
-  | "awaiting_parts"
   | "awaiting_landlord_approval"
   | "landlord_approved"
   | "completed"
@@ -32,6 +31,7 @@ export type WorkOrderStatus =
   | "completed"
   | "cancelled";
 export type NotificationType = "email" | "in_app";
+export type CommentChannel = "landlord" | "tenant" | "internal";
 
 export interface User {
   user_id: number;
@@ -89,8 +89,14 @@ export interface MaintenanceRequest {
   category: RequestCategory | null;
   priority: RequestPriority;
   status: RequestStatus;
+  approved_quote_id: number | null;
+  approved_by: number | null;
   submitted_at: string;
   acknowledged_at: string | null;
+  in_progress_at: string | null;
+  awaiting_landlord_approval_at: string | null;
+  landlord_approved_at: string | null;
+  invoice_received_at: string | null;
   completed_at: string | null;
   closed_at: string | null;
 }
@@ -132,12 +138,25 @@ export interface WorkOrder {
   completed_at: string | null;
 }
 
+export interface MaintenanceQuote {
+  quote_id: number;
+  request_id: number;
+  contractor_name: string;
+  quoted_amount: string;
+  availability_note: string | null;
+  quote_notes: string | null;
+  is_preapproved_contractor: boolean;
+  created_by: number;
+  created_at: string;
+}
+
 export interface Comment {
   comment_id: number;
   request_id: number;
   user_id: number;
   comment_text: string;
   is_internal: boolean;
+  channel: CommentChannel;
   created_at: string;
 }
 

@@ -496,9 +496,9 @@ export default function PropertyOnboardingClient({
 
   if (mode === "list") {
     return (
-      <section className="pm-dashboard-page mx-auto px-2 px-lg-3 py-3">
+      <section className="pm-dashboard-page pm-properties-page mx-auto px-2 px-lg-3 py-3">
         <div className="pm-maintenance-new-header mb-4">
-          <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div className="pm-property-page-heading">
             <div>
               <h1 className="h3 mb-2">Properties</h1>
               <p className="text-muted mb-0">
@@ -510,7 +510,7 @@ export default function PropertyOnboardingClient({
             {currentUser.role === "property_manager" ? (
               <Link
                 href="/properties/new"
-                className="btn pm-dashboard-pill-button"
+                className="btn pm-dashboard-pill-button pm-property-heading-action"
                 style={{
                   background: "#ffffff",
                   border: "1px solid #e8e2da",
@@ -535,7 +535,8 @@ export default function PropertyOnboardingClient({
           ) : properties.length === 0 ? (
             <p className="text-muted mb-0">No property records yet.</p>
           ) : (
-            <div className="table-responsive">
+            <>
+            <div className="table-responsive pm-property-list-table">
               <table className="table align-middle mb-0">
                 <thead>
                   <tr>
@@ -587,6 +588,52 @@ export default function PropertyOnboardingClient({
                 </tbody>
               </table>
             </div>
+            <div className="pm-property-mobile-list">
+              {properties.map((property) => (
+                <article className="pm-property-mobile-card" key={property.property_id}>
+                  <div className="pm-property-mobile-card-heading">
+                    <div>
+                      <h3>{property.address}</h3>
+                      <p>
+                        {[property.suburb, property.state, property.postcode]
+                          .filter(Boolean)
+                          .join(" ")}
+                      </p>
+                    </div>
+                    <span className="pm-property-mobile-type">
+                      {property.property_type ?? "Unknown"}
+                    </span>
+                  </div>
+                  <dl className="pm-property-mobile-meta">
+                    <div>
+                      <dt>Units</dt>
+                      <dd>{property.num_units}</dd>
+                    </div>
+                    <div>
+                      <dt>Landlord</dt>
+                      <dd>
+                        {ownerName(property)}
+                        {property.owner_email ? (
+                          <span>{property.owner_email}</span>
+                        ) : null}
+                      </dd>
+                    </div>
+                  </dl>
+                  <Link
+                    href={`/properties/${property.property_id}`}
+                    className="btn btn-sm pm-dashboard-pill-button pm-property-mobile-action"
+                    style={{
+                      background: "#ffffff",
+                      border: "1px solid #e8e2da",
+                      color: "#1f2933",
+                    }}
+                  >
+                    Details
+                  </Link>
+                </article>
+              ))}
+            </div>
+            </>
           )}
         </div>
       </section>

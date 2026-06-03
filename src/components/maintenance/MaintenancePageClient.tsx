@@ -106,8 +106,8 @@ export default function MaintenancePageClient({
     }
 
     return (
-        <section>
-            <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+        <section className="pm-maintenance-page">
+            <div className="pm-maintenance-page-heading">
                 <div>
                     <h1 className="h3 mb-1">{pageTitle}</h1>
                     <p className="text-muted mb-0">{pageDescription}</p>
@@ -116,17 +116,7 @@ export default function MaintenancePageClient({
                 {canCreateRequest && (
                     <Link
                         href="/maintenance/new"
-                        className="btn"
-                        style={{
-                            backgroundColor: "#ff4f00",
-                            border: "1px solid #ff4f00",
-                            borderRadius: "999px",
-                            color: "#fffefb",
-                            fontWeight: 700,
-                            padding: "9px 16px",
-                            boxShadow: "0 8px 18px rgba(255, 79, 0, 0.18)",
-                            whiteSpace: "nowrap",
-                        }}
+                        className="btn pm-maintenance-new-request-button"
                     >
                         + New Request
                     </Link>

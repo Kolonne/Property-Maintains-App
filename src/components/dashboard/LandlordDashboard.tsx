@@ -108,7 +108,7 @@ export default function LandlordDashboard() {
 
       {approvalQueue.length > 0 && (
         <div
-          className="mb-4 p-3 d-flex align-items-center justify-content-between"
+          className="pm-dashboard-approval-banner mb-4 p-3 d-flex align-items-center justify-content-between"
           style={{
             background: "#ffffff",
             border: "1px solid #f97316",
@@ -204,8 +204,6 @@ export default function LandlordDashboard() {
 }
 
 function PropertyCard({ property }: { property: LandlordProperty }) {
-  const pct = property.total_units > 0 ? Math.round((property.occupied_units / property.total_units) * 100) : 0;
-
   return (
     <div className="p-3 h-100 pm-dashboard-watermark" style={{ background: "#ffffff", border: "1px solid #e8e2da", borderRadius: "16px", position: "relative", overflow: "hidden" }}>
       <div className="d-flex justify-content-between align-items-start mb-2">
@@ -220,10 +218,7 @@ function PropertyCard({ property }: { property: LandlordProperty }) {
         )}
       </div>
       <div style={{ fontSize: "13px", color: "#6b7280", marginBottom: "10px" }}>
-        {property.total_units} units
-      </div>
-      <div style={{ height: "7px", background: "#fff1e7", borderRadius: "999px", overflow: "hidden" }}>
-        <div style={{ height: "100%", width: `${pct}%`, background: "#f97316" }} />
+        {property.occupied_units} of {property.total_units} units occupied
       </div>
     </div>
   );
@@ -238,7 +233,7 @@ function RequestSummaryRow({ request, actionLabel }: { request: LandlordRequest;
           {request.property_address}{request.unit_number ? ` - Unit ${request.unit_number}` : ""} - {fmtDate(request.submitted_at)}
         </div>
       </div>
-      <div className="d-flex align-items-center flex-shrink-0" style={{ gap: "8px" }}>
+      <div className="pm-dashboard-request-actions d-flex align-items-center flex-shrink-0" style={{ gap: "8px" }}>
         <PriorityBadge priority={request.priority} />
         <StatusBadge status={request.status} />
         <Link href={`/maintenance/${request.request_id}`} className="btn btn-sm pm-dashboard-pill-button" style={{ border: "1px solid #e8e2da", color: "#1f2933", background: "#ffffff" }}>

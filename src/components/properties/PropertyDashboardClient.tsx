@@ -146,14 +146,14 @@ export default function PropertyDashboardClient({
     .join(", ");
 
   return (
-    <section className="pm-dashboard-page mx-auto px-2 px-lg-3 py-3">
+    <section className="pm-dashboard-page pm-property-detail-page mx-auto px-2 px-lg-3 py-3">
       <div className="pm-maintenance-new-header mb-4">
-        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div className="pm-property-page-heading">
           <div>
             <h1 className="h3 mb-2">{property.address}</h1>
             <p className="text-muted mb-0">{fullAddress}</p>
           </div>
-          <div className="d-flex flex-wrap gap-2">
+          <div className="pm-property-dashboard-actions d-flex flex-wrap gap-2">
             <Link
               href="/properties"
               className="btn pm-dashboard-pill-button"
@@ -298,7 +298,7 @@ export default function PropertyDashboardClient({
                       borderRadius: "12px",
                     }}
                   >
-                    <div className="d-flex justify-content-between gap-3">
+                    <div className="pm-property-unit-heading d-flex justify-content-between gap-3">
                       <div>
                         <div className="fw-bold">
                           {unit.unit_number ? `Unit ${unit.unit_number}` : "Primary dwelling"}
@@ -344,48 +344,96 @@ export default function PropertyDashboardClient({
             {maintenance.length === 0 ? (
               <p className="text-muted mb-0">No maintenance requests recorded yet.</p>
             ) : (
-              <div className="table-responsive">
-                <table className="table align-middle mb-0">
-                  <thead>
-                    <tr>
-                      <th>Request</th>
-                      <th>Status</th>
-                      <th>Priority</th>
-                      <th>Attachments</th>
-                      <th className="text-end">Submitted</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {maintenance.map((request) => (
-                      <tr key={request.request_id}>
-                        <td>
-                          <Link
-                            href={`/maintenance/${request.request_id}`}
-                            className="fw-semibold pm-dashboard-link"
-                          >
-                            {request.title}
-                          </Link>
-                          <div className="small text-muted">
-                            {request.unit_number
-                              ? `Unit ${request.unit_number}`
-                              : "Primary dwelling"}
-                            {" · "}
-                            {personName(
-                              request.reporter_first_name,
-                              request.reporter_last_name,
-                              isLandlord ? "Tenant details hidden" : "Reporter unknown"
-                            )}
-                          </div>
-                        </td>
-                        <td className="text-capitalize">{statusLabel(request.status)}</td>
-                        <td className="text-capitalize">{request.priority}</td>
-                        <td>{request.image_count}</td>
-                        <td className="text-end">{formatDate(request.submitted_at)}</td>
+              <>
+                <div className="table-responsive pm-property-maintenance-table">
+                  <table className="table align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th>Request</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Attachments</th>
+                        <th className="text-end">Submitted</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {maintenance.map((request) => (
+                        <tr key={request.request_id}>
+                          <td>
+                            <Link
+                              href={`/maintenance/${request.request_id}`}
+                              className="fw-semibold pm-dashboard-link"
+                            >
+                              {request.title}
+                            </Link>
+                            <div className="small text-muted">
+                              {request.unit_number
+                                ? `Unit ${request.unit_number}`
+                                : "Primary dwelling"}
+                              {" · "}
+                              {personName(
+                                request.reporter_first_name,
+                                request.reporter_last_name,
+                                isLandlord ? "Tenant details hidden" : "Reporter unknown"
+                              )}
+                            </div>
+                          </td>
+                          <td className="text-capitalize">{statusLabel(request.status)}</td>
+                          <td className="text-capitalize">{request.priority}</td>
+                          <td>{request.image_count}</td>
+                          <td className="text-end">{formatDate(request.submitted_at)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="pm-property-maintenance-mobile-list">
+                  {maintenance.map((request) => (
+                    <article
+                      className="pm-property-maintenance-mobile-card"
+                      key={request.request_id}
+                    >
+                      <div>
+                        <Link
+                          href={`/maintenance/${request.request_id}`}
+                          className="pm-dashboard-link"
+                        >
+                          {request.title}
+                        </Link>
+                        <p>
+                          {request.unit_number
+                            ? `Unit ${request.unit_number}`
+                            : "Primary dwelling"}
+                          {" · "}
+                          {personName(
+                            request.reporter_first_name,
+                            request.reporter_last_name,
+                            isLandlord ? "Tenant details hidden" : "Reporter unknown"
+                          )}
+                        </p>
+                      </div>
+                      <dl>
+                        <div>
+                          <dt>Status</dt>
+                          <dd>{statusLabel(request.status)}</dd>
+                        </div>
+                        <div>
+                          <dt>Priority</dt>
+                          <dd>{request.priority}</dd>
+                        </div>
+                        <div>
+                          <dt>Files</dt>
+                          <dd>{request.image_count}</dd>
+                        </div>
+                        <div>
+                          <dt>Submitted</dt>
+                          <dd>{formatDate(request.submitted_at)}</dd>
+                        </div>
+                      </dl>
+                    </article>
+                  ))}
+                </div>
+              </>
             )}
           </DashboardCard>
         </div>
@@ -407,9 +455,9 @@ function MetricCard({
 }) {
   return (
     <div className="col-12 col-md-6 col-xl-3">
-      <div className="pm-dashboard-card h-100 p-4">
+      <div className="pm-dashboard-card h-100 p-4 pm-property-metric-card">
         <div className="d-flex align-items-center justify-content-between gap-3">
-          <div>
+          <div className="min-w-0">
             <div className="text-muted small fw-semibold">{label}</div>
             <div className="h3 fw-bold mb-1">{value}</div>
             <div className="small text-muted">{detail}</div>
@@ -443,7 +491,7 @@ function DashboardCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="pm-dashboard-card h-100 p-4">
+    <section className="pm-dashboard-card h-100 p-4 pm-property-dashboard-card">
       <h2 className="h5 fw-bold mb-3">
         <i className={`bi ${icon} me-2`} style={{ color: "#f97316" }} aria-hidden="true" />
         {title}
@@ -459,8 +507,8 @@ function InfoRow({ label, value }: { label: string; value: string }) {
       className="d-flex justify-content-between gap-3 py-2"
       style={{ borderBottom: "1px solid #f0ebe5" }}
     >
-      <span className="text-muted">{label}</span>
-      <span className="fw-semibold text-end">{value}</span>
+      <span className="text-muted flex-shrink-0">{label}</span>
+      <span className="fw-semibold text-end text-break">{value}</span>
     </div>
   );
 }

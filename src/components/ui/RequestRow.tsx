@@ -27,10 +27,10 @@ export function RequestRow({ request, href }: RequestRowProps) {
       }}
     >
       <div className="flex-grow-1 min-w-0">
-        <div style={{ fontSize: "16px", fontWeight: 700, color: "#1f2933", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        <div className="pm-request-row-title" style={{ fontSize: "16px", fontWeight: 700, color: "#1f2933", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {request.title}
         </div>
-        <div className="d-flex align-items-center" style={{ gap: "12px", marginTop: "4px" }}>
+        <div className="pm-request-row-meta d-flex align-items-center" style={{ gap: "12px", marginTop: "4px" }}>
           <span style={{ fontSize: "13px", color: "#6b7280" }}>
             Submitted {formatDate(request.submitted_at)}
           </span>

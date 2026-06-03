@@ -47,7 +47,7 @@ export async function getTenantOverview(userId: number): Promise<TenantOverview 
 export interface TenantRequestSummary {
   request_id: number;
   title: string;
-  status: "submitted" | "acknowledged" | "in_progress" | "awaiting_parts"
+  status: "submitted" | "acknowledged" | "in_progress"
         | "awaiting_landlord_approval" | "landlord_approved" | "completed" | "closed";
   priority: "low" | "medium" | "high" | "urgent";
   submitted_at: string;
@@ -146,6 +146,9 @@ export async function getTenantDashboardStats(userId: number): Promise<TenantDas
         GREATEST(
           vr.submitted_at,
           COALESCE(vr.acknowledged_at, vr.submitted_at),
+          COALESCE(vr.in_progress_at, vr.submitted_at),
+          COALESCE(vr.awaiting_landlord_approval_at, vr.submitted_at),
+          COALESCE(vr.landlord_approved_at, vr.submitted_at),
           COALESCE(vr.completed_at, vr.submitted_at),
           COALESCE(vr.closed_at, vr.submitted_at),
           COALESCE(MAX(c.created_at), vr.submitted_at),
@@ -159,6 +162,9 @@ export async function getTenantDashboardStats(userId: number): Promise<TenantDas
         vr.request_id,
         vr.submitted_at,
         vr.acknowledged_at,
+        vr.in_progress_at,
+        vr.awaiting_landlord_approval_at,
+        vr.landlord_approved_at,
         vr.completed_at,
         vr.closed_at
     )
@@ -168,7 +174,6 @@ export async function getTenantDashboardStats(userId: number): Promise<TenantDas
           'submitted',
           'acknowledged',
           'in_progress',
-          'awaiting_parts',
           'awaiting_landlord_approval',
           'landlord_approved'
         )
