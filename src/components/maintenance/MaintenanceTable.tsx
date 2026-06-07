@@ -26,16 +26,14 @@ const statusRank: Record<RequestStatus, number> = {
     submitted: 1,
     acknowledged: 2,
     in_progress: 3,
-    awaiting_parts: 4,
-    awaiting_landlord_approval: 5,
-    landlord_approved: 6,
-    completed: 7,
-    closed: 8,
+    awaiting_landlord_approval: 4,
+    landlord_approved: 5,
+    completed: 6,
+    closed: 7,
 };
 
 const tenantInProgressStatuses: RequestStatus[] = [
     "in_progress",
-    "awaiting_parts",
     "awaiting_landlord_approval",
     "landlord_approved",
 ];
@@ -48,7 +46,7 @@ function getPropertyUnitLabel(request: MaintenanceRequestListItem) {
 }
 
 function getTenantStatusLabel(status: RequestStatus) {
-    return tenantInProgressStatuses.includes(status) ? "In Progress" : undefined;
+    return tenantInProgressStatuses.includes(status) ? "Working on it" : undefined;
 }
 
 function formatDate(value: string) {
@@ -166,71 +164,107 @@ export default function MaintenanceTable({
     }
 
     return (
-        <div
-            className="table-responsive"
-            style={{
-                background: "#fffefb",
-                border: "1px solid #c5c0b1",
-                borderRadius: "8px",
-                boxShadow: "0 10px 24px rgba(32, 21, 21, 0.06)",
-                overflow: "hidden",
-            }}
-        >
-            <table className="table align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th style={{ background: "#eceae3", borderBottom: "1px solid #c5c0b1" }}>
-                            <SortButton label="Title" column="title" activeColumn={sortKey} direction={sortDirection} onSort={updateSort} />
-                        </th>
-                        <th style={{ background: "#eceae3", borderBottom: "1px solid #c5c0b1" }}>
-                            <SortButton label="Property / Unit" column="propertyUnit" activeColumn={sortKey} direction={sortDirection} onSort={updateSort} />
-                        </th>
-                        <th style={{ background: "#eceae3", borderBottom: "1px solid #c5c0b1" }}>
-                            <SortButton label="Status" column="status" activeColumn={sortKey} direction={sortDirection} onSort={updateSort} />
-                        </th>
-                        <th style={{ background: "#eceae3", borderBottom: "1px solid #c5c0b1" }}>
-                            <SortButton label="Priority" column="priority" activeColumn={sortKey} direction={sortDirection} onSort={updateSort} />
-                        </th>
-                        <th style={{ background: "#eceae3", borderBottom: "1px solid #c5c0b1" }}>
-                            <SortButton label="Date Submitted" column="submittedAt" activeColumn={sortKey} direction={sortDirection} onSort={updateSort} />
-                        </th>
-                        <th style={{ background: "#eceae3", borderBottom: "1px solid #c5c0b1", color: "#201515", fontSize: "12px", fontWeight: 750, letterSpacing: "0.04em", textTransform: "uppercase" }}>
-                            Action
-                        </th>
-                    </tr>
-                </thead>
+        <>
+            <div
+                className="table-responsive pm-maintenance-table-wrap"
+                style={{
+                    background: "#fffefb",
+                    border: "1px solid #c5c0b1",
+                    borderRadius: "8px",
+                    boxShadow: "0 10px 24px rgba(32, 21, 21, 0.06)",
+                    overflow: "hidden",
+                }}
+            >
+                <table className="table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th style={{ background: "#eceae3", borderBottom: "1px solid #c5c0b1" }}>
+                                <SortButton label="Title" column="title" activeColumn={sortKey} direction={sortDirection} onSort={updateSort} />
+                            </th>
+                            <th style={{ background: "#eceae3", borderBottom: "1px solid #c5c0b1" }}>
+                                <SortButton label="Property / Unit" column="propertyUnit" activeColumn={sortKey} direction={sortDirection} onSort={updateSort} />
+                            </th>
+                            <th style={{ background: "#eceae3", borderBottom: "1px solid #c5c0b1" }}>
+                                <SortButton label="Status" column="status" activeColumn={sortKey} direction={sortDirection} onSort={updateSort} />
+                            </th>
+                            <th style={{ background: "#eceae3", borderBottom: "1px solid #c5c0b1" }}>
+                                <SortButton label="Priority" column="priority" activeColumn={sortKey} direction={sortDirection} onSort={updateSort} />
+                            </th>
+                            <th style={{ background: "#eceae3", borderBottom: "1px solid #c5c0b1" }}>
+                                <SortButton label="Date Submitted" column="submittedAt" activeColumn={sortKey} direction={sortDirection} onSort={updateSort} />
+                            </th>
+                            <th style={{ background: "#eceae3", borderBottom: "1px solid #c5c0b1", color: "#201515", fontSize: "12px", fontWeight: 750, letterSpacing: "0.04em", textTransform: "uppercase" }}>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    {sortedRequests.map((request) => (
-                        <tr key={request.request_id}>
-                            <td>
-                                <div style={{ color: "#201515", fontWeight: 650 }}>
-                                    {request.title}
-                                </div>
-                                <div className="small text-muted">
-                                    {request.category ?? "Uncategorised"}
-                                </div>
-                            </td>
-                            <td className="text-muted">
-                                {getPropertyUnitLabel(request)}
-                            </td>
-                            <td>
+                    <tbody>
+                        {sortedRequests.map((request) => (
+                            <tr key={request.request_id}>
+                                <td>
+                                    <div style={{ color: "#201515", fontWeight: 650 }}>
+                                        {request.title}
+                                    </div>
+                                    <div className="small text-muted">
+                                        {request.category ?? "Uncategorised"}
+                                    </div>
+                                </td>
+                                <td className="text-muted">
+                                    {getPropertyUnitLabel(request)}
+                                </td>
+                                <td>
+                                    <StatusBadge
+                                        status={request.status}
+                                        label={role === "tenant" ? getTenantStatusLabel(request.status) : undefined}
+                                    />
+                                </td>
+                                <td>
+                                    <PriorityBadge priority={request.priority} />
+                                </td>
+                                <td className="text-muted">{formatDate(request.submitted_at)}</td>
+                                <td>
+                                    <MaintenanceRowActions role={role} request={request} />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            <div className="pm-maintenance-mobile-list">
+                {sortedRequests.map((request) => (
+                    <article className="pm-maintenance-mobile-card" key={request.request_id}>
+                        <div className="pm-maintenance-mobile-card-heading">
+                            <div>
+                                <h2>{request.title}</h2>
+                                <p>{getPropertyUnitLabel(request)}</p>
+                            </div>
+                            <PriorityBadge priority={request.priority} />
+                        </div>
+                        <div className="pm-maintenance-mobile-card-meta">
+                            <div>
+                                <span>Status</span>
                                 <StatusBadge
                                     status={request.status}
                                     label={role === "tenant" ? getTenantStatusLabel(request.status) : undefined}
                                 />
-                            </td>
-                            <td>
-                                <PriorityBadge priority={request.priority} />
-                            </td>
-                            <td className="text-muted">{formatDate(request.submitted_at)}</td>
-                            <td>
-                                <MaintenanceRowActions role={role} request={request} />
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+                            </div>
+                            <div>
+                                <span>Category</span>
+                                <strong>{request.category ?? "Uncategorised"}</strong>
+                            </div>
+                            <div>
+                                <span>Submitted</span>
+                                <strong>{formatDate(request.submitted_at)}</strong>
+                            </div>
+                        </div>
+                        <div className="pm-maintenance-mobile-card-actions">
+                            <MaintenanceRowActions role={role} request={request} />
+                        </div>
+                    </article>
+                ))}
+            </div>
+        </>
     );
 }

@@ -27,16 +27,15 @@ export function DashboardKpiCard({
 
   return (
     <article
-      className="h-100"
+      className="h-100 pm-dashboard-kpi-card"
       style={{
         background: "#ffffff",
         border: "1px solid #e8e2da",
         borderRadius: "14px",
         boxShadow: "0 10px 26px rgba(31, 41, 51, 0.07)",
-        padding: "18px",
       }}
     >
-      <div className="d-flex align-items-center" style={{ gap: "16px" }}>
+      <div className="pm-dashboard-kpi-card-inner">
         <span
           className="d-inline-flex align-items-center justify-content-center flex-shrink-0"
           style={{
@@ -49,7 +48,7 @@ export function DashboardKpiCard({
         >
           <i className={`bi ${icon}`} style={{ fontSize: "25px" }} aria-hidden="true" />
         </span>
-        <span className="d-flex flex-column">
+        <span className="d-flex flex-column min-w-0">
           <span style={{ color: "#1f2933", fontSize: "13px", fontWeight: 800 }}>
             {label}
           </span>

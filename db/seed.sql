@@ -14,7 +14,7 @@
 --   1. submitted             — new report, not yet seen by PM
 --   2. acknowledged          — PM has seen it, no action yet
 --   3. in_progress           — work order raised, contractor scheduled
---   4. awaiting_parts        — job started, waiting on parts
+--   4. in_progress           — PM is actively progressing the request
 --   5. awaiting_landlord_approval — quote exceeds PM authority, needs landlord
 --   6. landlord_approved     — landlord approved, ready to proceed
 --   7. completed             — job done, awaiting tenant confirmation
@@ -120,7 +120,7 @@ VALUES (
     'plumbing', 'high', 'in_progress', NOW() - INTERVAL '5 days', NOW() - INTERVAL '4 days'
 );
 
--- 4. AWAITING_PARTS — job started, waiting on parts to arrive
+-- 4. IN_PROGRESS — PM is actively progressing the request
 INSERT INTO maintenance_requests
     (unit_id, reported_by, title, description, category, priority, status, submitted_at, acknowledged_at)
 VALUES (
@@ -128,7 +128,7 @@ VALUES (
     (SELECT user_id FROM users WHERE email = 'tenant2@example.com'),
     'Dishwasher not draining',
     'Dishwasher finishes cycle but leaves standing water in the bottom. Has been like this for 3 days.',
-    'appliance', 'medium', 'awaiting_parts', NOW() - INTERVAL '8 days', NOW() - INTERVAL '7 days'
+    'appliance', 'medium', 'in_progress', NOW() - INTERVAL '8 days', NOW() - INTERVAL '7 days'
 );
 
 -- 5. AWAITING_LANDLORD_APPROVAL — quote over PM threshold, escalated
@@ -233,53 +233,53 @@ INSERT INTO work_orders (request_id, assigned_to_contractor_id, assigned_by, sch
 -- =====================================================================
 -- COMMENTS
 -- =====================================================================
-INSERT INTO comments (request_id, user_id, comment_text, is_internal) VALUES
+INSERT INTO comments (request_id, user_id, comment_text, is_internal, channel) VALUES
     -- Kitchen tap
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Kitchen tap leaking'),
         (SELECT user_id FROM users WHERE email = 'pm@example.com'),
-        'AquaFix quoted $180 including parts. Scheduling for tomorrow morning.', FALSE),
+        'AquaFix quoted $180 including parts. Scheduling for tomorrow morning.', FALSE, 'tenant'),
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Kitchen tap leaking'),
         (SELECT user_id FROM users WHERE email = 'tenant1@example.com'),
-        'Thanks, morning works well for me. I will be home from 8am.', FALSE),
+        'Thanks, morning works well for me. I will be home from 8am.', FALSE, 'tenant'),
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Kitchen tap leaking'),
         (SELECT user_id FROM users WHERE email = 'pm@example.com'),
-        'Internal: washer replacement likely, may need to isolate supply. Warn tenant.', TRUE),
+        'Internal: washer replacement likely, may need to isolate supply. Warn tenant.', TRUE, 'internal'),
     -- Front door lock
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Front door lock stiff'),
         (SELECT user_id FROM users WHERE email = 'pm@example.com'),
-        'Will arrange a locksmith this week. Will confirm time shortly.', FALSE),
+        'Will arrange a locksmith this week. Will confirm time shortly.', FALSE, 'tenant'),
     -- Dishwasher
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Dishwasher not draining'),
         (SELECT user_id FROM users WHERE email = 'pm@example.com'),
-        'Technician attended — drain pump faulty. Part on order, ETA 3 days.', FALSE),
+        'Technician attended — drain pump faulty. Part on order, ETA 3 days.', FALSE, 'tenant'),
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Dishwasher not draining'),
         (SELECT user_id FROM users WHERE email = 'tenant2@example.com'),
-        'Thanks for the update. Will hand-wash in the meantime.', FALSE),
+        'Thanks for the update. Will hand-wash in the meantime.', FALSE, 'tenant'),
     -- Powerpoint — landlord approval chain
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Powerpoint not working'),
         (SELECT user_id FROM users WHERE email = 'pm@example.com'),
-        'Sparky Electricians quoted $320 for full circuit inspection and repair. Exceeds my approval limit — sent to landlord for sign-off.', FALSE),
+        'Sparky Electricians quoted $320 for full circuit inspection and repair. Exceeds my approval limit — sent to landlord for sign-off.', FALSE, 'landlord'),
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Powerpoint not working'),
         (SELECT user_id FROM users WHERE email = 'pm@example.com'),
-        'Internal: circuit may be tripping due to overload. Advise tenant not to use that circuit.', TRUE),
+        'Internal: circuit may be tripping due to overload. Advise tenant not to use that circuit.', TRUE, 'internal'),
     -- Hot water — landlord approved
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Hot water system making noise'),
         (SELECT user_id FROM users WHERE email = 'pm@example.com'),
-        'AquaFix inspected — system is 12 years old and failing. Full replacement recommended at $850.', FALSE),
+        'AquaFix inspected — system is 12 years old and failing. Full replacement recommended at $850.', FALSE, 'landlord'),
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Hot water system making noise'),
         (SELECT user_id FROM users WHERE email = 'landlord@example.com'),
-        'Approved. Please proceed with replacement as soon as possible.', FALSE),
+        'Approved. Please proceed with replacement as soon as possible.', FALSE, 'landlord'),
     -- Window latch — completed
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Bedroom window latch broken'),
         (SELECT user_id FROM users WHERE email = 'pm@example.com'),
-        'Repair completed. New latch fitted and tested. Please confirm all is OK.', FALSE),
+        'Repair completed. New latch fitted and tested. Please confirm all is OK.', FALSE, 'tenant'),
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Bedroom window latch broken'),
         (SELECT user_id FROM users WHERE email = 'tenant3@example.com'),
-        'Confirmed — window locks properly now. Thank you!', FALSE),
+        'Confirmed — window locks properly now. Thank you!', FALSE, 'tenant'),
     -- Smoke alarm — closed
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Smoke alarm battery flat'),
         (SELECT user_id FROM users WHERE email = 'pm@example.com'),
-        'Battery replaced same day. All smoke alarms in the property tested and operational.', FALSE);
+        'Battery replaced same day. All smoke alarms in the property tested and operational.', FALSE, 'tenant');
 
 -- =====================================================================
 -- NOTIFICATIONS
@@ -332,7 +332,7 @@ INSERT INTO audit_log (request_id, changed_by, old_status, new_status, notes, ch
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Kitchen tap leaking'),
         (SELECT user_id FROM users WHERE email = 'pm@example.com'),
         'acknowledged', 'in_progress', 'Work order raised with AquaFix Plumbing.', NOW() - INTERVAL '3 days'),
-    -- Dishwasher: submitted → acknowledged → in_progress → awaiting_parts
+    -- Dishwasher: submitted → acknowledged → in_progress
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Dishwasher not draining'),
         (SELECT user_id FROM users WHERE email = 'pm@example.com'),
         'submitted', 'acknowledged', 'PM reviewed.', NOW() - INTERVAL '7 days'),
@@ -341,7 +341,7 @@ INSERT INTO audit_log (request_id, changed_by, old_status, new_status, notes, ch
         'acknowledged', 'in_progress', 'All Trades Co attended — drain pump faulty.', NOW() - INTERVAL '6 days'),
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Dishwasher not draining'),
         (SELECT user_id FROM users WHERE email = 'pm@example.com'),
-        'in_progress', 'awaiting_parts', 'Replacement drain pump ordered. ETA 3 days.', NOW() - INTERVAL '5 days'),
+        'acknowledged', 'in_progress', 'Replacement drain pump ordered. ETA 3 days.', NOW() - INTERVAL '5 days'),
     -- Powerpoint: submitted → acknowledged → awaiting_landlord_approval
     ((SELECT request_id FROM maintenance_requests WHERE title = 'Powerpoint not working'),
         (SELECT user_id FROM users WHERE email = 'pm@example.com'),

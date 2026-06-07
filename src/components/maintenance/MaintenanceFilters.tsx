@@ -24,7 +24,6 @@ const managerStatusOptions: Array<RequestStatus | "all"> = [
     "submitted",
     "acknowledged",
     "in_progress",
-    "awaiting_parts",
     "awaiting_landlord_approval",
     "landlord_approved",
     "completed",
@@ -66,7 +65,7 @@ export default function MaintenanceFilters({
 
     return (
         <div
-            className="mb-3"
+            className="pm-maintenance-filters mb-3"
             style={{
                 background: "#fffefb",
                 border: "1px solid #c5c0b1",
@@ -76,9 +75,9 @@ export default function MaintenanceFilters({
                 padding: "14px",
             }}
         >
-            <div className="d-flex flex-wrap gap-3 align-items-center">
+            <div className="pm-maintenance-filter-row">
                 <div
-                    className="d-flex flex-wrap"
+                    className="pm-maintenance-status-filter-group"
                     role="group"
                     aria-label="Status filters"
                     style={{
@@ -111,7 +110,7 @@ export default function MaintenanceFilters({
                 </div>
 
                 <input
-                    className="form-control form-control-sm ms-auto"
+                    className="form-control form-control-sm pm-maintenance-search-input"
                     style={{
                         maxWidth: "300px",
                         background: "#fffdf9",

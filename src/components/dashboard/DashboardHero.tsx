@@ -20,7 +20,7 @@ export function DashboardHero({
 }: DashboardHeroProps) {
   return (
     <section className="pm-dashboard-hero">
-      <div style={{ maxWidth: "720px", padding: "48px 28px 42px", position: "relative", zIndex: 1 }}>
+      <div className="pm-dashboard-hero-content">
         {/* {eyebrow ? (
           <p
             style={{
@@ -36,9 +36,9 @@ export function DashboardHero({
           </p>
         ) : null} */}
         <h1
+          className="pm-dashboard-hero-title"
           style={{
             color: "#1f2933",
-            fontSize: "38px",
             fontWeight: 800,
             lineHeight: 1.08,
             marginBottom: "12px",

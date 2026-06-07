@@ -6,7 +6,6 @@ const STATUS_MAP: Record<RequestStatus, { label: string; tier: Tier }> = {
   submitted:                  { label: "Submitted",         tier: "open" },
   acknowledged:               { label: "Acknowledged",      tier: "open" },
   in_progress:                { label: "In Progress",       tier: "progress" },
-  awaiting_parts:             { label: "Awaiting Parts",    tier: "open" },
   awaiting_landlord_approval: { label: "Awaiting Approval", tier: "attention" },
   landlord_approved:          { label: "Approved",          tier: "approved" },
   completed:                  { label: "Completed",         tier: "done" },

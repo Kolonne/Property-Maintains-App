@@ -101,7 +101,6 @@ CREATE TABLE IF NOT EXISTS maintenance_requests (
                             'submitted',
                             'acknowledged',
                             'in_progress',
-                            'awaiting_parts',
                             'awaiting_landlord_approval',
                             'landlord_approved',
                             'completed',
@@ -109,6 +108,10 @@ CREATE TABLE IF NOT EXISTS maintenance_requests (
                           )),
     submitted_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     acknowledged_at     TIMESTAMPTZ,
+    in_progress_at      TIMESTAMPTZ,
+    awaiting_landlord_approval_at TIMESTAMPTZ,
+    landlord_approved_at TIMESTAMPTZ,
+    invoice_received_at TIMESTAMPTZ,
     completed_at        TIMESTAMPTZ,
     closed_at           TIMESTAMPTZ
 );
@@ -173,6 +176,28 @@ CREATE INDEX IF NOT EXISTS idx_work_orders_user       ON work_orders(assigned_to
 CREATE INDEX IF NOT EXISTS idx_work_orders_contractor ON work_orders(assigned_to_contractor_id);
 CREATE INDEX IF NOT EXISTS idx_work_orders_status     ON work_orders(status);
 
+CREATE TABLE IF NOT EXISTS maintenance_quotes (
+    quote_id                    SERIAL PRIMARY KEY,
+    request_id                  INTEGER NOT NULL REFERENCES maintenance_requests(request_id) ON DELETE CASCADE,
+    contractor_name             VARCHAR(200) NOT NULL,
+    quoted_amount               DECIMAL(10,2) NOT NULL CHECK (quoted_amount > 0),
+    availability_note           VARCHAR(255),
+    quote_notes                 TEXT,
+    is_preapproved_contractor   BOOLEAN NOT NULL DEFAULT FALSE,
+    created_by                  INTEGER NOT NULL REFERENCES users(user_id) ON DELETE RESTRICT,
+    created_at                  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_maintenance_quotes_request ON maintenance_quotes(request_id);
+
+ALTER TABLE maintenance_requests
+    ADD COLUMN IF NOT EXISTS approved_quote_id INTEGER REFERENCES maintenance_quotes(quote_id) ON DELETE SET NULL;
+
+ALTER TABLE maintenance_requests
+    ADD COLUMN IF NOT EXISTS approved_by INTEGER REFERENCES users(user_id) ON DELETE SET NULL;
+
+CREATE INDEX IF NOT EXISTS idx_requests_approved_quote ON maintenance_requests(approved_quote_id);
+
 -- =====================================================================
 -- 5. COMMUNICATIONS & AUDIT
 -- =====================================================================
@@ -183,10 +208,13 @@ CREATE TABLE IF NOT EXISTS comments (
     user_id          INTEGER NOT NULL REFERENCES users(user_id) ON DELETE RESTRICT,
     comment_text     TEXT NOT NULL,
     is_internal      BOOLEAN NOT NULL DEFAULT FALSE,
+    channel          VARCHAR(20) NOT NULL DEFAULT 'tenant'
+                       CHECK (channel IN ('landlord', 'tenant', 'internal')),
     created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_comments_request ON comments(request_id);
+CREATE INDEX IF NOT EXISTS idx_comments_request_channel ON comments(request_id, channel);
 
 CREATE TABLE IF NOT EXISTS notifications (
     notification_id  SERIAL PRIMARY KEY,

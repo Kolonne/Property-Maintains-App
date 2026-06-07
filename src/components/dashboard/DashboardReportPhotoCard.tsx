@@ -12,15 +12,14 @@ export function DashboardReportPhotoCard({
   return (
     <section className="pm-dashboard-photo-card">
       <div
-        className="p-3 p-lg-4"
+        className="pm-dashboard-photo-card-content p-3 p-lg-4"
         style={{
-          maxWidth: "48%",
           minHeight: "145px",
         }}
       >
-        <div className="d-flex align-items-center h-100" style={{ gap: "28px" }}>
+        <div className="pm-dashboard-photo-card-inner d-flex align-items-center h-100" style={{ gap: "28px" }}>
           <span
-            className="d-inline-flex align-items-center justify-content-center flex-shrink-0"
+            className="pm-dashboard-photo-card-icon d-inline-flex align-items-center justify-content-center flex-shrink-0"
             style={{
               background: "#f97316",
               borderRadius: "999px",
@@ -31,7 +30,7 @@ export function DashboardReportPhotoCard({
           >
             <i className="bi bi-camera" style={{ fontSize: "21px" }} aria-hidden="true" />
           </span>
-          <div style={{ maxWidth: "290px", marginLeft: "10px" }}>
+          <div className="pm-dashboard-photo-card-copy" style={{ maxWidth: "290px", marginLeft: "10px" }}>
             <h2 style={{ color: "#1f2933", fontSize: "18px", fontWeight: 800, marginBottom: "7px" }}>
               Report an issue with photos
             </h2>
@@ -40,7 +39,7 @@ export function DashboardReportPhotoCard({
             </p>
             <Link
               href={href}
-              className="btn pm-dashboard-pill-button"
+              className="btn pm-dashboard-pill-button pm-dashboard-photo-card-button"
               style={{
                 background: "#f97316",
                 border: "1px solid #f97316",

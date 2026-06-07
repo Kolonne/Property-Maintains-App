@@ -22,7 +22,6 @@ const navItems: ProtectedNavLink[] = [
   { label: "Dashboard", href: "/dashboard", screen: "dashboard", action: "view", exactMatch: true },
   { label: "Maintenance", href: "/maintenance", screen: "maintenance", action: "view" },
   { label: "New Request", href: "/maintenance/new", screen: "maintenance", action: "create", exactMatch: true },
-  { label: "Shared Documents", href: "/profile", screen: "condition_reports", action: "view", roles: ["tenant"] },
   { label: "Properties", href: "/properties", screen: "properties", action: "view" },
   { label: "Quotes", href: "/quotes", screen: "quotes", action: "view" },
   { label: "Approvals", href: "/approvals", screen: "approvals", action: "view" },
@@ -146,9 +145,6 @@ export default function ProtectedAppNav({ children }: { children: ReactNode }) {
 
     return hasPermission(currentUser.role, item.screen, item.action);
   });
-  const currentPageTitle =
-    visibleNavItems.find((item) => isActivePath(pathname, item))?.label ?? "Dashboard";
-
   return (
     <div className="d-flex" style={{ minHeight: "100vh", background: "#faf7f3" }}>
       <aside
@@ -166,7 +162,7 @@ export default function ProtectedAppNav({ children }: { children: ReactNode }) {
           style={{
             borderBottom: "1px solid #e8e2da",
             gap: "12px",
-            minHeight: "78px",
+            minHeight: "50px",
             padding: "20px 28px",
             position: "relative",
             zIndex: 1,
@@ -263,6 +259,7 @@ export default function ProtectedAppNav({ children }: { children: ReactNode }) {
 
       <div className="d-flex flex-column flex-grow-1" style={{ minWidth: 0 }}>
         <header
+          className="pm-protected-header"
           style={{
             background: "#ffffff",
             borderBottom: "1px solid #e8e2da",
@@ -271,24 +268,11 @@ export default function ProtectedAppNav({ children }: { children: ReactNode }) {
             position: "sticky",
             top: 0,
             zIndex: 100,
+            marginBottom: "20px",
           }}
         >
-          <div className="container-fluid d-flex flex-wrap align-items-center justify-content-between gap-3 px-4 py-3">
-            <div className="d-flex align-items-center" style={{ gap: "28px" }}>
-              <button
-                className="btn btn-link p-0"
-                type="button"
-                aria-label="Menu"
-                style={{ color: "#111827", fontSize: "21px", textDecoration: "none" }}
-              >
-                <i className="bi bi-list" aria-hidden="true" />
-              </button>
-              <h1 style={{ color: "#111827", fontSize: "16px", fontWeight: 800, margin: 0 }}>
-                {currentPageTitle}
-              </h1>
-            </div>
-
-            <div className="d-flex flex-wrap align-items-center gap-3">
+          <div className="pm-protected-topbar container-fluid d-flex flex-wrap align-items-center justify-content-between gap-3 px-4 py-3">
+            <div className="pm-protected-user-actions d-flex flex-wrap align-items-center gap-3">
               <button
                 className="btn btn-link position-relative p-0"
                 type="button"
@@ -317,139 +301,163 @@ export default function ProtectedAppNav({ children }: { children: ReactNode }) {
                 </span>
               </button>
 
-              <div
-                className="d-flex align-items-center"
-                style={{ gap: "12px" }}
-              >
-                <span
-                  className="d-inline-flex align-items-center justify-content-center"
-                  style={{
-                    background: "#fff1e7",
-                    border: "2px solid #f3c6a7",
-                    borderRadius: "999px",
-                    color: "#f97316",
-                    height: "46px",
-                    width: "46px",
-                  }}
+              <div className="pm-protected-account-actions d-flex align-items-center">
+                <div
+                  className="pm-protected-user-chip d-flex align-items-center"
+                  style={{ gap: "12px" }}
                 >
-                  <i className="bi bi-person" aria-hidden="true" />
-                </span>
-                <span className="d-flex flex-column">
-                  <span style={{ color: "#111827", fontSize: "14px", fontWeight: 800, lineHeight: 1.2 }}>
-                    {currentUser.name}
-                  </span>
-                  <span style={{ color: "#6b7280", fontSize: "12px", fontWeight: 600 }}>
-                    {roleLabel[currentUser.role]}
-                  </span>
-                </span>
-              </div>
-
-              <div className="position-relative">
-                <button
-                  className="btn btn-link p-0"
-                  type="button"
-                  aria-expanded={devMenuOpen}
-                  aria-label="Open dev user switcher"
-                  onClick={() => setDevMenuOpen((isOpen) => !isOpen)}
-                  style={{ color: "#111827", textDecoration: "none" }}
-                >
-                  <i className="bi bi-chevron-down" aria-hidden="true" />
-                </button>
-
-                {devMenuOpen ? (
-                  <div
-                    className="position-absolute end-0 mt-3 p-3 shadow-sm"
+                  <span
+                    className="d-inline-flex align-items-center justify-content-center"
                     style={{
-                      width: "320px",
-                      background: "#ffffff",
-                      border: "1px solid #e8e2da",
-                      borderRadius: "18px",
-                      zIndex: 200,
+                      background: "#fff1e7",
+                      border: "2px solid #f3c6a7",
+                      borderRadius: "999px",
+                      color: "#f97316",
+                      height: "46px",
+                      width: "46px",
                     }}
                   >
+                    <i className="bi bi-person" aria-hidden="true" />
+                  </span>
+                  <span className="d-flex flex-column">
+                    <span style={{ color: "#111827", fontSize: "14px", fontWeight: 800, lineHeight: 1.2 }}>
+                      {currentUser.name}
+                    </span>
+                    <span style={{ color: "#6b7280", fontSize: "12px", fontWeight: 600 }}>
+                      {roleLabel[currentUser.role]}
+                    </span>
+                  </span>
+                </div>
+
+                <div className="position-relative">
+                  <button
+                    className="btn btn-link p-0"
+                    type="button"
+                    aria-expanded={devMenuOpen}
+                    aria-label="Open dev user switcher"
+                    onClick={() => setDevMenuOpen((isOpen) => !isOpen)}
+                    style={{ color: "#111827", textDecoration: "none" }}
+                  >
+                    <i className="bi bi-chevron-down" aria-hidden="true" />
+                  </button>
+
+                  {devMenuOpen ? (
                     <div
+                      className="pm-dev-user-menu position-absolute end-0 mt-3 p-3 shadow-sm"
                       style={{
-                        fontSize: "12px",
-                        fontWeight: 800,
-                        letterSpacing: 0,
-                        textTransform: "uppercase",
-                        color: "#1f2933",
-                        marginBottom: "12px",
+                        background: "#ffffff",
+                        border: "1px solid #e8e2da",
+                        borderRadius: "18px",
+                        zIndex: 200,
                       }}
                     >
-                      Dev user switcher
-                    </div>
-
-                    {usersError ? (
-                      <p className="small text-danger mb-3">{usersError}</p>
-                    ) : null}
-
-                    {isLoadingUsers ? (
-                      <p className="small text-muted mb-3">Loading users...</p>
-                    ) : (
-                      <div className="d-flex flex-column gap-3">
-                        {devUserGroups.map((group) => (
-                          <label key={group.role} className="d-flex flex-column gap-1">
-                            <span className="small fw-semibold">{group.label}</span>
-                            <select
-                              className="form-select form-select-sm"
-                              value={getSelectedValue(group.role)}
-                              onChange={(event) =>
-                                handleSelectDevUser(group.role, event.target.value)
-                              }
-                            >
-                              <option value="">{group.placeholder}</option>
-                              {devUsers[group.role].map((user: DevUser) => (
-                                <option key={user.id} value={user.id}>
-                                  {user.name} ({user.email})
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="mt-3 pt-3" style={{ borderTop: "1px solid #e8e2da" }}>
-                      <button
-                        className="btn btn-sm w-100 pm-dashboard-pill-button"
-                        type="button"
+                      <div
                         style={{
-                          background: "#ffffff",
-                          border: "1px solid #e8e2da",
+                          fontSize: "12px",
+                          fontWeight: 800,
+                          letterSpacing: 0,
+                          textTransform: "uppercase",
                           color: "#1f2933",
-                        }}
-                        onClick={() => {
-                          setRole("null");
-                          setDevMenuOpen(false);
+                          marginBottom: "12px",
                         }}
                       >
-                        Use None / Logged out
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
+                        Dev user switcher
+                      </div>
 
-              <button
-                className="btn btn-sm pm-dashboard-pill-button"
-                type="button"
-                style={{
-                  background: "#ffffff",
-                  border: "1px solid #e8e2da",
-                  color: "#1f2933",
-                }}
-                onClick={() => {
-                  setRole("null");
-                  router.push("/");
-                  router.refresh();
-                }}
-              >
-                Logout
-              </button>
+                      {usersError ? (
+                        <p className="small text-danger mb-3">{usersError}</p>
+                      ) : null}
+
+                      {isLoadingUsers ? (
+                        <p className="small text-muted mb-3">Loading users...</p>
+                      ) : (
+                        <div className="d-flex flex-column gap-3">
+                          {devUserGroups.map((group) => (
+                            <label key={group.role} className="d-flex flex-column gap-1">
+                              <span className="small fw-semibold">{group.label}</span>
+                              <select
+                                className="form-select form-select-sm"
+                                value={getSelectedValue(group.role)}
+                                onChange={(event) =>
+                                  handleSelectDevUser(group.role, event.target.value)
+                                }
+                              >
+                                <option value="">{group.placeholder}</option>
+                                {devUsers[group.role].map((user: DevUser) => (
+                                  <option key={user.id} value={user.id}>
+                                    {user.name} ({user.email})
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="mt-3 pt-3" style={{ borderTop: "1px solid #e8e2da" }}>
+                        <button
+                          className="btn btn-sm w-100 pm-dashboard-pill-button"
+                          type="button"
+                          style={{
+                            background: "#ffffff",
+                            border: "1px solid #e8e2da",
+                            color: "#1f2933",
+                          }}
+                          onClick={() => {
+                            setRole("null");
+                            setDevMenuOpen(false);
+                          }}
+                        >
+                          Use None / Logged out
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+
+                <button
+                  className="btn btn-sm pm-dashboard-pill-button"
+                  type="button"
+                  style={{
+                    background: "#ffffff",
+                    border: "1px solid #e8e2da",
+                    color: "#1f2933",
+                  }}
+                  onClick={() => {
+                    setRole("null");
+                    router.push("/");
+                    router.refresh();
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
             </div>
           </div>
         </header>
+
+        <nav className="pm-mobile-nav d-md-none" aria-label="Primary">
+          {visibleNavItems.map((item) => {
+            const active = isActivePath(pathname, item);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="pm-mobile-nav-link text-decoration-none"
+                aria-current={active ? "page" : undefined}
+                style={{
+                  background: active ? "#fff1e7" : "#ffffff",
+                  borderColor: active ? "#f97316" : "#e8e2da",
+                  color: active ? "#f97316" : "#374151",
+                }}
+              >
+                <NavIcon label={item.label} />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
         <main className="flex-grow-1" style={{ padding: "0 12px 28px", background: "#faf7f3", minWidth: 0 }}>
           <div style={{ position: "relative", zIndex: 1, width: "100%" }}>

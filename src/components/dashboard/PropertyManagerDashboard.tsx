@@ -168,7 +168,7 @@ function PMRequestRow({ request, showAction = false, dimmed = false }: { request
           {request.property_address}{request.unit_number ? ` - Unit ${request.unit_number}` : ""} - {tenantName} - {fmtDate(request.submitted_at)}
         </div>
       </div>
-      <div className="d-flex align-items-center flex-shrink-0" style={{ gap: "8px" }}>
+      <div className="pm-dashboard-request-actions d-flex align-items-center flex-shrink-0" style={{ gap: "8px" }}>
         <PriorityBadge priority={request.priority} />
         <StatusBadge status={request.status} />
         <Link href={`/maintenance/${request.request_id}`} className="btn btn-sm pm-dashboard-pill-button" style={{ border: "1px solid #e8e2da", color: "#1f2933", background: "#ffffff" }}>

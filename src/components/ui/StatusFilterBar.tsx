@@ -5,7 +5,6 @@ const FILTERS = [
   { value: "submitted",                    label: "Submitted" },
   { value: "acknowledged",                 label: "Acknowledged" },
   { value: "in_progress",                  label: "In Progress" },
-  { value: "awaiting_parts",               label: "Awaiting Parts" },
   { value: "awaiting_landlord_approval",   label: "Awaiting Approval" },
   { value: "landlord_approved",            label: "Approved" },
   { value: "completed",                    label: "Completed" },

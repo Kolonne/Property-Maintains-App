@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const navLinks = [
   { label: "Services", href: "/services" },
@@ -7,73 +11,87 @@ const navLinks = [
 ];
 
 export default function PublicAppNav() {
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <header
-      style={{
-        background: "#fffefb",
-        borderBottom: "1px solid #c5c0b1",
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-      }}
-    >
-      <nav className="container-fluid d-flex flex-wrap align-items-center justify-content-between gap-3 px-4 py-3">
-        <div className="d-flex flex-wrap align-items-center gap-4">
-          <Link
-            href="/"
-            className="d-flex align-items-center text-decoration-none"
-            style={{ gap: "10px" }}
-          >
-            <span
-              style={{
-                width: "28px",
-                height: "28px",
-                background: "#ff4f00",
-                borderRadius: "6px",
-                display: "inline-block",
-              }}
-            />
-            <span style={{ fontSize: "18px", fontWeight: 600, color: "#201515" }}>
-              Property Maintains
+    <header className="pm-public-nav-shell">
+      <nav className="pm-public-nav" aria-label="Public navigation">
+        <Link href="/" className="pm-public-brand">
+          <span className="pm-public-brand-icon">
+            <i className="bi bi-house-door" aria-hidden="true" />
+          </span>
+          <span className="pm-public-brand-copy">
+            <span>
+              Property<span>Maintains</span>
             </span>
-          </Link>
+            <span>Maintenance Made Clearer</span>
+          </span>
+        </Link>
 
-          <div className="d-flex align-items-center gap-1">
-            {navLinks.map((link) => (
+        <button
+          aria-controls="public-navigation-links"
+          aria-expanded={menuOpen}
+          aria-label="Toggle navigation menu"
+          className="pm-public-menu-toggle"
+          onClick={() => setMenuOpen((isOpen) => !isOpen)}
+          type="button"
+        >
+          <i className={`bi ${menuOpen ? "bi-x-lg" : "bi-list"}`} aria-hidden="true" />
+        </button>
+
+        <div
+          className={`pm-public-nav-links ${menuOpen ? "is-open" : ""}`}
+          id="public-navigation-links"
+        >
+          {navLinks.map((link) => {
+            const active =
+              pathname === link.href || pathname.startsWith(`${link.href}/`);
+
+            return (
               <Link
-                key={link.href}
+                aria-current={active ? "page" : undefined}
+                className={`pm-public-nav-link ${active ? "is-active" : ""}`}
                 href={link.href}
-                className="px-3 py-2 text-decoration-none"
-                style={{
-                  color: "#36342e",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  borderRadius: "6px",
-                }}
+                key={link.href}
+                onClick={() => setMenuOpen(false)}
               >
-                {link.label}
+                <PublicNavIcon label={link.label} />
+                <span>{link.label}</span>
               </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="d-flex align-items-center">
+            );
+          })}
           <Link
             href="/login"
-            className="btn btn-sm"
-            style={{
-              background: "#ff4f00",
-              color: "#fffefb",
-              border: "1px solid #ff4f00",
-              borderRadius: "6px",
-              fontWeight: 600,
-              padding: "6px 14px",
-            }}
+            className="pm-public-nav-link pm-public-nav-login-mobile"
+            onClick={() => setMenuOpen(false)}
           >
-            Login
+            <i className="bi bi-box-arrow-in-right" aria-hidden="true" />
+            <span>Login</span>
           </Link>
         </div>
+
+        <Link
+          href="/login"
+          className="pm-public-login-link"
+          onClick={() => setMenuOpen(false)}
+        >
+          Login
+        </Link>
       </nav>
     </header>
   );
+}
+
+function PublicNavIcon({ label }: { label: string }) {
+  const iconClass =
+    label === "Services"
+      ? "bi-tools"
+      : label === "About Us"
+        ? "bi-info-circle"
+        : label === "Contact"
+          ? "bi-question-circle"
+          : "bi-circle";
+
+  return <i className={`bi ${iconClass}`} aria-hidden="true" />;
 }
